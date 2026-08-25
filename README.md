@@ -177,6 +177,10 @@ Ejemplo:
 VITE_API_URL=http://localhost:8080
 ```
 
+En despliegue, el frontend de Vercel debe definir `VITE_API_URL` con el dominio público HTTPS del backend de Railway, sin una barra final. El backend debe definir `CORS_ALLOWED_ORIGINS` con el dominio público de Vercel. Si hay más de un origen autorizado, se separan con comas.
+
+El endpoint público `GET /api/v1/health` permite comprobar la conexión sin autenticación. El resto de las rutas bajo `/api` permanece protegido.
+
 ## Calidad y pruebas
 
 ### Backend
