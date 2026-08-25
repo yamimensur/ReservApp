@@ -114,6 +114,14 @@ JWT_SECRET=una_clave_larga_y_segura
 
 Las migraciones de esquema se ejecutarán con Flyway al iniciar la aplicación.
 
+Para cargar los datos de demostración del flujo principal, activa además el perfil `demo`:
+
+```env
+SPRING_PROFILES_ACTIVE=demo
+```
+
+Este perfil agrega `db/seed` a las ubicaciones de Flyway. No debe habilitarse en una base de producción con datos reales.
+
 ### 3. Iniciar el backend
 
 ```bash

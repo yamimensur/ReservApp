@@ -1,0 +1,20 @@
+# Secretos y configuración local
+.env
+.env.*
+!.env.example
+application-local.yml
+
+# Java / Maven
+backend/target/
+.mvn/timing.properties
+
+# Node / Vite
+frontend/node_modules/
+frontend/dist/
+
+# IDE y sistema operativo
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
