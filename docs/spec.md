@@ -29,10 +29,36 @@
 | Comida | Opción del menú: entrada, plato principal, postre o bebida. | Tipo de comida, Restricción alimenticia, Menú diario, Reserva. |
 | Temporada | Planificación de menús para una estación y un intervalo de fechas. | Semana de temporada, Menú diario. |
 | Semana de temporada | Una de las cuatro semanas que componen el ciclo circular de una temporada. | Temporada, Menú diario. |
-| Menú diario | Conjunto de comidas disponible para una fecha determinada. | Semana de temporada, Comida, Reserva. |
+| Menú diario | Plantilla de comidas correspondiente a un día de la semana dentro del ciclo de una temporada. | Semana de temporada, Comida, Reserva. |
 | Reserva | Selección de comidas de una persona para una fecha. | Usuario, Menú diario, Comida, Asistencia. |
 | Asistencia | Confirmación de que una persona con reserva retiró su almuerzo. | Reserva, Usuario administrador. |
 | Liquidación mensual | Consolidado de asistencias confirmadas e importes por persona y período. | Usuario, Asistencia. |
+
+### Decisiones de modelado
+
+- Cada usuario tiene exactamente un rol y un rol puede estar asignado a cero o más usuarios. Un usuario no puede acumular varios roles simultáneamente.
+- Un menú diario es una plantilla asociada a exactamente una semana de temporada y a un día de la semana. La fecha concreta para la que se ofrece se determina aplicando el ciclo circular de la temporada; no se persiste un menú nuevo por cada fecha del calendario.
+- Una liquidación mensual corresponde a exactamente un usuario, un año y un mes. Un usuario puede tener cero o más liquidaciones, pero no más de una para el mismo año y mes.
+
+### Cardinalidades y reglas de borrado
+
+| Relación | Cardinalidad | Borrado del registro padre |
+|---|---|---|
+| Rol → Usuario | Un rol tiene 0..N usuarios; cada usuario tiene 1 rol. | `RESTRICT`: un rol asignado no se elimina. |
+| Usuario ↔ Restricción alimenticia | N-N; ambos lados admiten 0..N. | Al borrar un usuario se eliminan sus asociaciones; una restricción usada no se elimina. |
+| Comida ↔ Restricción alimenticia | N-N; una comida admite 0..N compatibilidades. | Al borrar una comida se eliminan sus asociaciones; una restricción usada no se elimina. |
+| Temporada → Semana de temporada | Una temporada tiene exactamente 4 semanas; cada semana pertenece a 1 temporada. | `CASCADE`: las semanas son parte de la temporada. |
+| Semana de temporada → Menú diario | Una semana tiene 1..N menús; cada menú pertenece a 1 semana. | `CASCADE`: los menús son parte de la semana. |
+| Menú diario ↔ Comida | N-N; un menú ofrece 1..N comidas y una comida puede aparecer en 0..N menús. | Al borrar un menú se eliminan sus asociaciones; una comida ofrecida no se elimina. |
+| Usuario → Reserva | Un usuario tiene 0..N reservas; cada reserva pertenece a 1 usuario. | `RESTRICT`: se conserva el historial de reservas. |
+| Menú diario → Reserva | Un menú tiene 0..N reservas; cada reserva referencia 1 menú. | `RESTRICT`: un menú reservado no se elimina. |
+| Reserva ↔ Comida | N-N; una reserva selecciona 1..N comidas. | Al borrar una reserva se eliminan sus asociaciones; una comida seleccionada no se elimina. |
+| Reserva → Asistencia | Una reserva tiene 0..1 asistencia; cada asistencia corresponde a 1 reserva. | `RESTRICT`: una reserva con asistencia no se elimina. |
+| Usuario administrador → Asistencia | Un administrador registra 0..N asistencias; cada asistencia identifica 1 administrador. | `RESTRICT`: se conserva quién confirmó la asistencia. |
+| Usuario → Liquidación mensual | Un usuario tiene 0..N liquidaciones; cada liquidación corresponde a 1 usuario. | `RESTRICT`: las liquidaciones deben conservarse. |
+| Liquidación mensual → Asistencia | Una liquidación incluye 0..N asistencias; una asistencia pertenece a 0..1 liquidación. | `RESTRICT`: una liquidación utilizada no se elimina. |
+
+Usuarios, comidas, reservas, temporadas publicadas, asistencias y liquidaciones se desactivan o cambian de estado cuando corresponda; no se borran físicamente si poseen historial. Los borrados en cascada se limitan a componentes sin identidad independiente y tablas de asociación.
 
 ## 4. Historias de usuario
 
