@@ -14,4 +14,11 @@ public class Asistencia {
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "liquidacion_id") private LiquidacionMensual liquidacion;
     @Column(name = "confirmada_en", nullable = false) private Instant confirmadaEn;
     protected Asistencia() {}
+    public Asistencia(Reserva reserva, Usuario administrador, Instant confirmadaEn) {
+        this.reserva = reserva; this.administrador = administrador; this.confirmadaEn = confirmadaEn;
+    }
+    public Long getId() { return id; }
+    public Reserva getReserva() { return reserva; }
+    public Usuario getAdministrador() { return administrador; }
+    public Instant getConfirmadaEn() { return confirmadaEn; }
 }

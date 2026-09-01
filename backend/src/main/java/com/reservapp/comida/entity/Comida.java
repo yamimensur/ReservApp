@@ -16,4 +16,9 @@ public class Comida {
             inverseJoinColumns = @JoinColumn(name = "restriccion_id"))
     private Set<RestriccionAlimenticia> restriccionesCompatibles = new HashSet<>();
     protected Comida() {}
+    public Long getId() { return id; }
+    public String getNombre() { return nombre; }
+    public TipoComida getTipo() { return tipo; }
+    public EstadoComida getEstado() { return estado; }
+    public Set<RestriccionAlimenticia> getRestriccionesCompatibles() { return Set.copyOf(restriccionesCompatibles); }
 }

@@ -17,4 +17,8 @@ public class MenuDiario {
     @JoinTable(name = "menu_comida", joinColumns = @JoinColumn(name = "menu_id"), inverseJoinColumns = @JoinColumn(name = "comida_id"))
     private Set<Comida> comidas = new HashSet<>();
     protected MenuDiario() {}
+    public Long getId() { return id; }
+    public DayOfWeek getDiaSemana() { return diaSemana; }
+    public Set<Comida> getComidas() { return Set.copyOf(comidas); }
+    public SemanaTemporada getSemana() { return semana; }
 }

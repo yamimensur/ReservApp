@@ -12,4 +12,7 @@ public class Temporada {
     @Column(name = "fecha_hasta", nullable = false) private LocalDate fechaHasta;
     @Enumerated(EnumType.STRING) @Column(nullable = false, length = 20) private EstadoTemporada estado;
     protected Temporada() {}
+    public LocalDate getFechaDesde() { return fechaDesde; }
+    public LocalDate getFechaHasta() { return fechaHasta; }
+    public EstadoTemporada getEstado() { return estado; }
 }
