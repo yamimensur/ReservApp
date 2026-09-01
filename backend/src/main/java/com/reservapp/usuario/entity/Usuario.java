@@ -17,4 +17,8 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(name = "restriccion_id"))
     private Set<RestriccionAlimenticia> restricciones = new HashSet<>();
     protected Usuario() {}
+    public Long getId() { return id; }
+    public String getCorreo() { return correo; }
+    public EstadoUsuario getEstado() { return estado; }
+    public Set<RestriccionAlimenticia> getRestricciones() { return Set.copyOf(restricciones); }
 }

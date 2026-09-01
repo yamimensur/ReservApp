@@ -1,0 +1,94 @@
+@base = http://localhost:8080
+# @base = https://URL-PUBLICA-DEL-BACKEND
+@tokenEmpleado = REEMPLAZAR_JWT_EMPLEADO
+@tokenAdmin = REEMPLAZAR_JWT_ADMIN
+@reservaId = 1
+
+### health: exitoso -> 200
+GET {{base}}/api/v1/health
+
+### crear reserva: exitoso -> 201
+POST {{base}}/api/v1/reservas
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{
+  "menuId": 1,
+  "fecha": "2026-09-02",
+  "comidaIds": [1, 3, 4, 5]
+}
+
+### crear reserva: body inválido -> 400
+POST {{base}}/api/v1/reservas
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{
+  "menuId": null,
+  "fecha": "2020-01-01",
+  "comidaIds": []
+}
+
+### crear reserva: recurso relacionado inexistente -> 404
+POST {{base}}/api/v1/reservas
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{
+  "menuId": 999999,
+  "fecha": "2026-09-02",
+  "comidaIds": [1, 3]
+}
+
+### listar reservas propias -> 200
+GET {{base}}/api/v1/reservas?page=0&size=20
+Authorization: Bearer {{tokenEmpleado}}
+
+### obtener reserva -> 200
+GET {{base}}/api/v1/reservas/{{reservaId}}
+Authorization: Bearer {{tokenEmpleado}}
+
+### obtener reserva inexistente -> 404
+GET {{base}}/api/v1/reservas/999999
+Authorization: Bearer {{tokenEmpleado}}
+
+### modificar reserva: exitoso -> 200
+PATCH {{base}}/api/v1/reservas/{{reservaId}}
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{ "comidaIds": [1, 3, 4, 5] }
+
+### modificar reserva: body inválido -> 400
+PATCH {{base}}/api/v1/reservas/{{reservaId}}
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{ "comidaIds": [] }
+
+### modificar reserva inexistente -> 404
+PATCH {{base}}/api/v1/reservas/999999
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{ "comidaIds": [1, 3] }
+
+### cancelar reserva: exitoso -> 204
+DELETE {{base}}/api/v1/reservas/{{reservaId}}
+Authorization: Bearer {{tokenEmpleado}}
+
+### cancelar reserva inexistente -> 404
+DELETE {{base}}/api/v1/reservas/999999
+Authorization: Bearer {{tokenEmpleado}}
+
+### confirmar asistencia: exitoso -> 201
+POST {{base}}/api/v1/reservas/{{reservaId}}/confirmacion-asistencia
+Authorization: Bearer {{tokenAdmin}}
+
+### confirmar asistencia repetida -> 409
+POST {{base}}/api/v1/reservas/{{reservaId}}/confirmacion-asistencia
+Authorization: Bearer {{tokenAdmin}}
+
+### confirmar asistencia de reserva inexistente -> 404
+POST {{base}}/api/v1/reservas/999999/confirmacion-asistencia
+Authorization: Bearer {{tokenAdmin}}

@@ -25,4 +25,25 @@ public class Reserva {
     @JoinTable(name = "reserva_comida", joinColumns = @JoinColumn(name = "reserva_id"), inverseJoinColumns = @JoinColumn(name = "comida_id"))
     private Set<Comida> comidas = new HashSet<>();
     protected Reserva() {}
+
+    public Reserva(String codigo, Usuario usuario, MenuDiario menu, LocalDate fecha, Set<Comida> comidas, Instant creadaEn) {
+        this.codigo = codigo;
+        this.usuario = usuario;
+        this.menu = menu;
+        this.fecha = fecha;
+        this.comidas = new HashSet<>(comidas);
+        this.estado = EstadoReserva.ACTIVA;
+        this.creadaEn = creadaEn;
+    }
+
+    public Long getId() { return id; }
+    public String getCodigo() { return codigo; }
+    public Usuario getUsuario() { return usuario; }
+    public MenuDiario getMenu() { return menu; }
+    public LocalDate getFecha() { return fecha; }
+    public EstadoReserva getEstado() { return estado; }
+    public Instant getCreadaEn() { return creadaEn; }
+    public Set<Comida> getComidas() { return Set.copyOf(comidas); }
+    public void cambiarComidas(Set<Comida> comidas) { this.comidas = new HashSet<>(comidas); }
+    public void cancelar() { this.estado = EstadoReserva.CANCELADA; }
 }

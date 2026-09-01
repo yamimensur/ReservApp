@@ -9,4 +9,6 @@ public class SemanaTemporada {
     @ManyToOne(optional = false, fetch = FetchType.LAZY) @JoinColumn(name = "temporada_id", nullable = false) private Temporada temporada;
     @Column(nullable = false) private Short numero;
     protected SemanaTemporada() {}
+    public Temporada getTemporada() { return temporada; }
+    public Short getNumero() { return numero; }
 }
