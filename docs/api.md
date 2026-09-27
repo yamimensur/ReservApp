@@ -34,11 +34,31 @@ La API usa JSON, el prefijo `/api/v1` y autenticación JWT salvo donde se indiqu
 | `GET /api/v1/liquidaciones/{id}/exportacion?formato=csv|pdf` | Exporta una liquidación | Administrador, RR. HH. autorizado | `200`; `400`; `403`; `404` |
 | `GET /api/v1/reportes/resumen?desde=AAAA-MM-DD&hasta=AAAA-MM-DD` | Resume asistencia, consumo y preferencias | Administrador, RR. HH. autorizado | `200`; `400`; `403` |
 
+## Los errores, en detalle
+
+Cada fila sale de un *"caso de error"* de un criterio de aceptación de `docs/spec.md`. La columna *Capa* indica quién lo agarra: **Zod-equiv.** son las validaciones de forma que ya cubre Jakarta Validation (`@Valid` en el DTO); **regla** es lógica de negocio que necesita ir a buscar datos antes de poder decidir, hoy implementada en `ReservaService`.
+
+| Operación | Situación | Status | Mensaje | Capa | Historia |
+|---|---|---|---|---|---|
+| `POST /api/v1/reservas` | Fecha en el pasado, a más de 7 días, o cae en fin de semana | `422` | "Solo se reserva para días laborables hasta siete días hacia adelante" | regla | H2 |
+| `POST /api/v1/reservas` | El menú no corresponde al día de la semana solicitado | `422` | "El menú no corresponde al día solicitado" | regla | H2 |
+| `POST /api/v1/reservas` | La temporada del menú no está publicada, o la fecha cae fuera de su rango, o no es la semana activa del ciclo | `422` | "El menú no pertenece a la semana activa de una temporada publicada" | regla | H2, H4 |
+| `POST /api/v1/reservas` | No existe el menú indicado | `404` | "No existe el menú" | consulta | H2 |
+| `POST /api/v1/reservas` | Una o más comidas del body no existen | `404` | "Una o más comidas no existen" | consulta | H2 |
+| `POST /api/v1/reservas` | Una comida seleccionada no pertenece al menú | `422` | "Una comida no pertenece al menú" | regla | H2 |
+| `POST /api/v1/reservas` | No se seleccionó exactamente un plato principal | `422` | "Debe seleccionar exactamente un plato principal" | regla | H2 |
+| `POST /api/v1/reservas` | La selección incluye una comida inactiva o incompatible con las restricciones del usuario | `422` | "La selección contiene una comida inactiva o incompatible" | regla | H2 |
+| `POST /api/v1/reservas` | Ya existe una reserva del usuario para esa fecha | `409` | "Ya existe una reserva para la fecha indicada" | regla | H2 |
+| `PATCH /api/v1/reservas/{id}` | La reserva pertenece a otra persona | `403` | "La reserva pertenece a otra persona" | regla | H3 |
+| `PATCH /api/v1/reservas/{id}` | Venció el horario de modificación (09:00 del día de la reserva) | `409` | "Venció el horario de modificación o cancelación" | regla | H3 |
+| `PATCH /api/v1/reservas/{id}` | La nueva selección repite alguno de los casos de selección inválida de arriba (comida ajena al menú, sin plato principal, incompatible) | `422` | según el caso, igual que en `POST /api/v1/reservas` | regla | H3 |
+| `DELETE /api/v1/reservas/{id}` | La reserva pertenece a otra persona | `403` | "La reserva pertenece a otra persona" | regla | H3 |
+| `DELETE /api/v1/reservas/{id}` | Venció el horario de cancelación (09:00 del día de la reserva) | `409` | "Venció el horario de modificación o cancelación" | regla | H3 |
+
 ## Estado de implementación de esta iteración
 
 Están implementados el health check, el CRUD REST de `Reserva` (donde `DELETE` cancela para preservar historial) y la confirmación de asistencia. El resto constituye el contrato derivado de las historias H1–H6 y se implementará en sus iteraciones correspondientes.
 
 Pendientes explícitos exigidos por la cursada:
 
-- `TODO (clase 5)`: ampliar casos de reglas de negocio conforme se incorporen las restantes operaciones del contrato.
 - `TODO (clase 6)`: instalar el filtro JWT que construya el principal y sus authorities. Los controladores ya leen la identidad desde `Authentication`, no desde requests externos.

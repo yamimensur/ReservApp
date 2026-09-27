@@ -17,6 +17,15 @@ public class MenuDiario {
     @JoinTable(name = "menu_comida", joinColumns = @JoinColumn(name = "menu_id"), inverseJoinColumns = @JoinColumn(name = "comida_id"))
     private Set<Comida> comidas = new HashSet<>();
     protected MenuDiario() {}
+
+    /** Constructor de prueba: permite armar la entidad a mano en tests sin pasar por Hibernate. */
+    public MenuDiario(Long id, SemanaTemporada semana, DayOfWeek diaSemana, Set<Comida> comidas) {
+        this.id = id;
+        this.semana = semana;
+        this.diaSemana = diaSemana;
+        this.comidas = new HashSet<>(comidas);
+    }
+
     public Long getId() { return id; }
     public DayOfWeek getDiaSemana() { return diaSemana; }
     public Set<Comida> getComidas() { return Set.copyOf(comidas); }
