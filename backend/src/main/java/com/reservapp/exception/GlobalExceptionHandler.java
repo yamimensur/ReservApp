@@ -13,6 +13,10 @@ public class GlobalExceptionHandler {
     ResponseEntity<ApiError> notFound(RecursoNoEncontradoException ex) {
         return response(HttpStatus.NOT_FOUND, ex.getMessage(), Map.of());
     }
+    @ExceptionHandler(CredencialesInvalidasException.class)
+    ResponseEntity<ApiError> credenciales(CredencialesInvalidasException ex) {
+        return response(HttpStatus.UNAUTHORIZED, ex.getMessage(), Map.of());
+    }
     @ExceptionHandler(ReglaNegocioException.class)
     ResponseEntity<ApiError> negocio(ReglaNegocioException ex) {
         return response(ex.getStatus(), ex.getMessage(), Map.of());
