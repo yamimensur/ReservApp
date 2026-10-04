@@ -70,6 +70,102 @@ Content-Type: application/json
   "comidaIds": [1, 3]
 }
 
+### === Fase A / catálogo docs/api.md: casos de la regla de negocio (ReservaReglas) ===
+# Los siguientes casos usan datos del seed demo (perfil `demo`, ver
+# db/seed/R__carga_datos_demostracion.sql). Ese seed calcula sus fechas con
+# CURRENT_DATE, así que "fecha" no puede quedar fija en el archivo: se arma
+# con la variable dinámica {{$datetime "YYYY-MM-DD" ...}} de REST Client,
+# relativa al día en que se corre esta request.
+
+### crear reserva: fecha a más de 7 días -> 422 (docs/api.md: "Solo se reserva para días laborables hasta siete días hacia adelante")
+POST {{base}}/api/v1/reservas
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{
+  "menuId": 1,
+  "fecha": "{{$datetime "YYYY-MM-DD" 10 d}}",
+  "comidaIds": [2, 4, 5]
+}
+
+### crear reserva: fecha de fin de semana -> 422 (mismo mensaje que la de arriba)
+# Ajustar manualmente a un sábado o domingo próximo si $datetime no cae en fin de semana.
+POST {{base}}/api/v1/reservas
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{
+  "menuId": 1,
+  "fecha": "REEMPLAZAR_POR_UN_SABADO_O_DOMINGO_DENTRO_DE_7_DIAS",
+  "comidaIds": [2, 4, 5]
+}
+
+### crear reserva: sin plato principal -> 422 ("Debe seleccionar exactamente un plato principal")
+POST {{base}}/api/v1/reservas
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{
+  "menuId": 1,
+  "fecha": "{{$datetime "YYYY-MM-DD" 1 d}}",
+  "comidaIds": [1, 4, 5]
+}
+
+### crear reserva: comida incompatible con la restricción del usuario -> 422 ("La selección contiene una comida inactiva o incompatible")
+# empleado@reservapp.demo (usuario 1) tiene restricción "Vegetariana" (id 1); la comida 2
+# ("Milanesa con puré") no tiene ninguna restricción compatible cargada en el seed.
+POST {{base}}/api/v1/reservas
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{
+  "menuId": 1,
+  "fecha": "{{$datetime "YYYY-MM-DD" 1 d}}",
+  "comidaIds": [2, 4, 5]
+}
+
+### crear reserva: ya existe una reserva del usuario para esa fecha -> 409 ("Ya existe una reserva para la fecha indicada")
+# El seed ya crea DEMO-RESERVA-001 para empleado@reservapp.demo en "el próximo día laborable"
+# (ver R__carga_datos_demostracion.sql, CTE proximo_dia). Repetir esa misma fecha dispara el 409.
+POST {{base}}/api/v1/reservas
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{
+  "menuId": 1,
+  "fecha": "REEMPLAZAR_POR_LA_FECHA_DE_DEMO-RESERVA-001",
+  "comidaIds": [3, 4, 5]
+}
+
+### crear reserva: comida inactiva -> 422 ("La selección contiene una comida inactiva o incompatible")
+# PENDIENTE DE DATO: el seed demo no tiene ninguna comida con estado INACTIVA.
+# No se puede armar esta request contra datos reales hasta sumar una, ya sea
+# agregándola al seed o creándola a mano con PATCH /api/v1/comidas/{id} como admin.
+
+### crear reserva: comida que no pertenece al menú -> 422 ("Una comida no pertenece al menú")
+# PENDIENTE DE DATO: en el seed, las comidas 1-5 están cargadas en todos los
+# menús (INSERT INTO menu_comida cruza todas contra todas). No hay hoy una
+# comida activa que quede fuera de algún menú para probar este caso.
+
+### crear reserva: temporada no publicada o fuera de su rango de fechas -> 422 ("El menú no pertenece a la semana activa de una temporada publicada")
+# PENDIENTE DE DATO: el seed solo carga una temporada (id 1), en estado
+# PUBLICADA y con rango CURRENT_DATE-60 a CURRENT_DATE+90. No hay una segunda
+# temporada en BORRADOR ni con fechas fuera de rango para disparar este caso.
+
+### modificar reserva: venció el horario de las 09:00 -> 409 ("Venció el horario de modificación o cancelación")
+# Requiere correr esta request después de las 09:00 (hora de la reserva) del
+# día de {{reservaId}}. Antes de esa hora, la misma request da 200.
+PATCH {{base}}/api/v1/reservas/{{reservaId}}
+Authorization: Bearer {{tokenEmpleado}}
+Content-Type: application/json
+
+{ "comidaIds": [2, 4, 5] }
+
+### cancelar reserva: venció el horario de las 09:00 -> 409 (mismo mensaje que arriba)
+# Mismo requisito de horario que la request anterior.
+DELETE {{base}}/api/v1/reservas/{{reservaId}}
+Authorization: Bearer {{tokenEmpleado}}
+
 ### listar reservas propias -> 200
 GET {{base}}/api/v1/reservas?page=0&size=20
 Authorization: Bearer {{tokenEmpleado}}

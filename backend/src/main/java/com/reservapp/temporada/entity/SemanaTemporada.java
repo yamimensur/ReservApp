@@ -9,6 +9,14 @@ public class SemanaTemporada {
     @ManyToOne(optional = false, fetch = FetchType.LAZY) @JoinColumn(name = "temporada_id", nullable = false) private Temporada temporada;
     @Column(nullable = false) private Short numero;
     protected SemanaTemporada() {}
+
+    /** Constructor de prueba: permite armar la entidad a mano en tests sin pasar por Hibernate. */
+    public SemanaTemporada(Long id, Temporada temporada, Short numero) {
+        this.id = id;
+        this.temporada = temporada;
+        this.numero = numero;
+    }
+
     public Temporada getTemporada() { return temporada; }
     public Short getNumero() { return numero; }
 }

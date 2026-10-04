@@ -17,6 +17,18 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(name = "restriccion_id"))
     private Set<RestriccionAlimenticia> restricciones = new HashSet<>();
     protected Usuario() {}
+
+    /** Constructor de prueba: permite armar la entidad a mano en tests sin pasar por Hibernate. */
+    public Usuario(Long id, String correo, TipoUsuario tipoUsuario, EstadoUsuario estado, Rol rol,
+                   Set<RestriccionAlimenticia> restricciones) {
+        this.id = id;
+        this.correo = correo;
+        this.tipoUsuario = tipoUsuario;
+        this.estado = estado;
+        this.rol = rol;
+        this.restricciones = new HashSet<>(restricciones);
+    }
+
     public Long getId() { return id; }
     public String getCorreo() { return correo; }
     public EstadoUsuario getEstado() { return estado; }
