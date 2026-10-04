@@ -4,7 +4,7 @@ Aplicación web para la gestión integral de un comedor corporativo. Permite a e
 
 ## Equipo
 
-- Yamila Mensur — responsable del repositorio (creó el repo y tiene la cuenta de Vercel)
+- Yamile Mensur — responsable del repositorio (creó el repo y tiene la cuenta de Vercel)
 - Aldana Muñoz
 - Virginia Martinez
 - Cecilia Nuñez — cuenta de Render (backend en producción)
