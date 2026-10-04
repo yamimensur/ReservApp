@@ -15,6 +15,7 @@ import java.time.*;
 import java.util.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
+import com.reservapp.exception.RecursoNoEncontradoException;
 
 @ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
 class ReservaServiceTest {
@@ -37,5 +38,12 @@ class ReservaServiceTest {
         assertThatThrownBy(() -> service.crear(new CrearReservaRequest(1L, fecha, Set.of(3L)), "empleado@reservapp.demo"))
                 .isInstanceOf(ReglaNegocioException.class)
                 .hasMessageContaining("siete días");
+    }
+    @Test
+    void unaReservaAjenaSeInformaComoInexistente() {
+        ReservaService service = new ReservaService(reservas, usuarios, menus, comidas, Clock.systemDefaultZone());
+        when(reservas.findDetalleByIdAndUsuarioCorreo(1L, "otra@reservapp.demo")).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> service.obtener(1L, "otra@reservapp.demo"))
+                .isInstanceOf(RecursoNoEncontradoException.class);
     }
 }

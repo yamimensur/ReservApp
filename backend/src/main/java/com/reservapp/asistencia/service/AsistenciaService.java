@@ -25,7 +25,6 @@ public class AsistenciaService {
             throw new ReglaNegocioException(HttpStatus.CONFLICT, "Solo puede confirmarse una reserva activa");
         if (asistencias.existsByReservaId(reservaId))
             throw new ReglaNegocioException(HttpStatus.CONFLICT, "La asistencia ya fue confirmada");
-        // TODO (clase 6): el correo y el rol deben provenir del JWT una vez implementado el filtro de autenticación.
         var admin = usuarios.findByCorreo(correoAdministrador).orElseThrow(() -> new RecursoNoEncontradoException("No existe el administrador autenticado"));
         Asistencia a = asistencias.save(new Asistencia(reserva, admin, clock.instant()));
         return new AsistenciaResponse(a.getId(), reservaId, admin.getId(), a.getConfirmadaEn());

@@ -13,5 +13,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     @EntityGraph(attributePaths = {"usuario", "menu", "comidas"})
     Optional<Reserva> findDetalleById(Long id);
     @EntityGraph(attributePaths = {"usuario", "menu", "comidas"})
+    Optional<Reserva> findDetalleByIdAndUsuarioCorreo(Long id, String correo);
+    @EntityGraph(attributePaths = {"usuario", "menu", "comidas"})
     Page<Reserva> findByUsuarioId(Long usuarioId, Pageable pageable);
 }

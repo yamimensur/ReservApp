@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import com.reservapp.exception.RecursoNoEncontradoException;
 
 @Service
 public class ReservaService {
@@ -103,13 +104,13 @@ public class ReservaService {
     }
     private Usuario usuario(String correo) { return usuarios.findByCorreo(correo).orElseThrow(() -> new RecursoNoEncontradoException("No existe el usuario autenticado")); }
     private Reserva reservaPropia(Long id, String correo) {
-        Reserva r = reservas.findDetalleById(id).orElseThrow(() -> new RecursoNoEncontradoException("No existe la reserva"));
-        if (!r.getUsuario().getCorreo().equals(correo)) throw new ReglaNegocioException(HttpStatus.FORBIDDEN, "La reserva pertenece a otra persona");
-        return r;
+        return reservas.findDetalleByIdAndUsuarioCorreo(id, correo)
+                .orElseThrow(() -> new RecursoNoEncontradoException("No existe la reserva"));
     }
     private ReservaResponse response(Reserva r) {
         var detalle = r.getComidas().stream().sorted(Comparator.comparing(Comida::getId))
                 .map(c -> new ReservaResponse.ComidaResponse(c.getId(), c.getNombre(), c.getTipo().name())).toList();
         return new ReservaResponse(r.getId(), r.getCodigo(), r.getUsuario().getId(), r.getMenu().getId(), r.getFecha(), r.getEstado(), r.getCreadaEn(), detalle);
     }
+
 }
