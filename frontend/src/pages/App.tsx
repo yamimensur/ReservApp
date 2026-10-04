@@ -33,7 +33,7 @@ export function App() {
         </p>
         <h1 className="text-3xl font-bold tracking-tight">Comedor corporativo</h1>
         <p className="mt-3 text-slate-300">
-          Verificación de la conexión entre el frontend de Vercel y la API de Railway.
+          Verificación de la conexión entre el frontend de Vercel y la API de Render.
         </p>
 
         <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-950 p-5" aria-live="polite">
