@@ -16,6 +16,17 @@ public class Comida {
             inverseJoinColumns = @JoinColumn(name = "restriccion_id"))
     private Set<RestriccionAlimenticia> restriccionesCompatibles = new HashSet<>();
     protected Comida() {}
+
+    /** Constructor de prueba: permite armar la entidad a mano en tests sin pasar por Hibernate. */
+    public Comida(Long id, String nombre, TipoComida tipo, EstadoComida estado,
+                  Set<com.reservapp.usuario.entity.RestriccionAlimenticia> restriccionesCompatibles) {
+        this.id = id;
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.estado = estado;
+        this.restriccionesCompatibles = new HashSet<>(restriccionesCompatibles);
+    }
+
     public Long getId() { return id; }
     public String getNombre() { return nombre; }
     public TipoComida getTipo() { return tipo; }
