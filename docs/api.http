@@ -1,8 +1,38 @@
 @base = http://localhost:8080
-# @base = https://URL-PUBLICA-DEL-BACKEND
-@tokenEmpleado = REEMPLAZAR_JWT_EMPLEADO
-@tokenAdmin = REEMPLAZAR_JWT_ADMIN
+# @base = https://reservapp-api-v7dk.onrender.com
 @reservaId = 1
+
+# Ejecutar primero los tres logins: los demás pedidos toman el token de sus respuestas
+@tokenEmpleado = {{loginEmpleado.response.body.token}}
+@tokenTercerizado = {{loginTercerizado.response.body.token}}
+@tokenAdmin = {{loginAdmin.response.body.token}}
+
+### login empleado -> 200
+# @name loginEmpleado
+POST {{base}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "correo": "empleado@reservapp.demo", "password": "password" }
+
+### login tercerizado -> 200
+# @name loginTercerizado
+POST {{base}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "correo": "tercerizado@reservapp.demo", "password": "password" }
+
+### login admin -> 200
+# @name loginAdmin
+POST {{base}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "correo": "admin@reservapp.demo", "password": "password" }
+
+### login: contraseña incorrecta -> 401
+POST {{base}}/api/v1/auth/login
+Content-Type: application/json
+
+{ "correo": "empleado@reservapp.demo", "password": "incorrecta" }
 
 ### health: exitoso -> 200
 GET {{base}}/api/v1/health
@@ -188,3 +218,18 @@ Authorization: Bearer {{tokenAdmin}}
 ### confirmar asistencia de reserva inexistente -> 404
 POST {{base}}/api/v1/reservas/999999/confirmacion-asistencia
 Authorization: Bearer {{tokenAdmin}}
+
+### listar reservas sin token -> 401
+GET {{base}}/api/v1/reservas
+
+### listar reservas con rol administrador -> 403
+GET {{base}}/api/v1/reservas
+Authorization: Bearer {{tokenAdmin}}
+
+### obtener reserva ajena -> 404 (la reserva 1 es del empleado)
+GET {{base}}/api/v1/reservas/{{reservaId}}
+Authorization: Bearer {{tokenTercerizado}}
+
+### confirmar asistencia con rol empleado -> 403
+POST {{base}}/api/v1/reservas/{{reservaId}}/confirmacion-asistencia
+Authorization: Bearer {{tokenEmpleado}}

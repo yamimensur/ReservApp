@@ -7,4 +7,5 @@ public class Rol {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @Enumerated(EnumType.STRING) @Column(nullable = false, unique = true, length = 20) private RolNombre nombre;
     protected Rol() {}
+    public RolNombre getNombre() { return nombre; }
 }

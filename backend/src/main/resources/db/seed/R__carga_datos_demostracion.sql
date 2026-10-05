@@ -10,11 +10,11 @@ ON CONFLICT DO NOTHING;
 
 -- Todos los usuarios demo usan la contraseña "password" (hash BCrypt); cambiarla fuera del entorno demo.
 INSERT INTO usuario (id, correo, password_hash, tipo_usuario, estado, rol_id) VALUES
-    (1, 'empleado@reservapp.demo', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'EMPLEADO', 'ACTIVO', 1),
-    (2, 'tercerizado@reservapp.demo', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'TERCERIZADO', 'ACTIVO', 2),
-    (3, 'admin@reservapp.demo', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'EMPLEADO', 'ACTIVO', 3),
-    (4, 'rrhh@reservapp.demo', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'EMPLEADO', 'ACTIVO', 4)
-ON CONFLICT DO NOTHING;
+    (1, 'empleado@reservapp.demo', '$2a$10$5FwjoMNAWW/WQAe.O76FKOtMnnUd8cqkh3Ess9zU/40KLVFCGmi3O', 'EMPLEADO', 'ACTIVO', 1),
+    (2, 'tercerizado@reservapp.demo', '$2a$10$5FwjoMNAWW/WQAe.O76FKOtMnnUd8cqkh3Ess9zU/40KLVFCGmi3O', 'TERCERIZADO', 'ACTIVO', 2),
+    (3, 'admin@reservapp.demo', '$2a$10$5FwjoMNAWW/WQAe.O76FKOtMnnUd8cqkh3Ess9zU/40KLVFCGmi3O', 'EMPLEADO', 'ACTIVO', 3),
+    (4, 'rrhh@reservapp.demo', '$2a$10$5FwjoMNAWW/WQAe.O76FKOtMnnUd8cqkh3Ess9zU/40KLVFCGmi3O', 'EMPLEADO', 'ACTIVO', 4)
+ON CONFLICT (id) DO UPDATE SET password_hash = EXCLUDED.password_hash;
 
 INSERT INTO usuario_restriccion (usuario_id, restriccion_id) VALUES (1, 1), (2, 3) ON CONFLICT DO NOTHING;
 

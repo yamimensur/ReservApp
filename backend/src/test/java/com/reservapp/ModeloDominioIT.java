@@ -14,7 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(properties = "app.jwt.secret=secreto-solo-para-tests-de-al-menos-32-caracteres")
 @ActiveProfiles("demo")
 class ModeloDominioIT {
     @Container

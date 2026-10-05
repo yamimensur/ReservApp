@@ -15,8 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(HealthController.class)
-@Import(SecurityConfig.class)
-@TestPropertySource(properties = "app.cors.allowed-origins=https://reservapp.vercel.app")
+@Import({SecurityConfig.class, JwtConfig.class})
+@TestPropertySource(properties = {
+        "app.cors.allowed-origins=https://reservapp.vercel.app",
+        "app.jwt.secret=secreto-solo-para-tests-de-al-menos-32-caracteres"})
 class HealthControllerTest {
     @Autowired MockMvc mockMvc;
 

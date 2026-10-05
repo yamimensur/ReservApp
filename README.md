@@ -124,8 +124,10 @@ DB_PORT=5432
 DB_NAME=reservapp
 DB_USERNAME=postgres
 DB_PASSWORD=tu_contraseña
-JWT_SECRET=una_clave_larga_y_segura
+JWT_SECRET=pegar_aca_una_clave_de_al_menos_32_caracteres
 ```
+
+`JWT_SECRET` es obligatoria y debe tener **al menos 32 caracteres**: sin ella el backend no arranca. Se puede generar una con `openssl rand -base64 48` (incluido en Git Bash).
 
 Las migraciones de esquema se ejecutarán con Flyway al iniciar la aplicación.
 

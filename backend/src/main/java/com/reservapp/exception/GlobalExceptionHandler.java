@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.springframework.security.access.AccessDeniedException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -16,6 +17,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RecursoNoEncontradoException.class)
     ResponseEntity<ApiError> notFound(RecursoNoEncontradoException ex) {
         return response(HttpStatus.NOT_FOUND, ex.getMessage(), Map.of());
+    }
+    @ExceptionHandler(CredencialesInvalidasException.class)
+    ResponseEntity<ApiError> credenciales(CredencialesInvalidasException ex) {
+        return response(HttpStatus.UNAUTHORIZED, ex.getMessage(), Map.of());
     }
     @ExceptionHandler(ReglaNegocioException.class)
     ResponseEntity<ApiError> negocio(ReglaNegocioException ex) {
@@ -26,6 +31,12 @@ public class GlobalExceptionHandler {
         Map<String, String> fields = new LinkedHashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(e -> fields.putIfAbsent(e.getField(), e.getDefaultMessage()));
         return response(HttpStatus.BAD_REQUEST, "La solicitud contiene datos inválidos", fields);
+    }
+    // @PreAuthorize lanza AccessDeniedException dentro del controller. Sin este
+    // manejador la atraparía el genérico de Exception y respondería 500 en lugar de 403.
+    @ExceptionHandler(AccessDeniedException.class)
+    ResponseEntity<ApiError> sinPermiso(AccessDeniedException ex) {
+        return response(HttpStatus.FORBIDDEN, "No tenés permiso para esta acción", Map.of());
     }
     // Acá solo llega lo que NO se previó: un bug, no un resultado posible del
     // negocio. Se loguea el detalle completo (para el equipo) y se responde
