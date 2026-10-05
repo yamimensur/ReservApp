@@ -80,6 +80,6 @@ public class ReservaService {
     private ReservaResponse response(Reserva r) {
         var detalle = r.getComidas().stream().sorted(Comparator.comparing(Comida::getId))
                 .map(c -> new ReservaResponse.ComidaResponse(c.getId(), c.getNombre(), c.getTipo().name())).toList();
-        return new ReservaResponse(r.getId(), r.getCodigo(), r.getUsuario().getId(), r.getMenu().getId(), r.getFecha(), r.getEstado(), r.getCreadaEn(), detalle);
+        return new ReservaResponse(r.getId(), r.getCodigo(), r.getUsuario().getId(), r.getMenu().getId(), r.getFecha(), r.getEstado(), r.getCreadaEn(), detalle, null);
     }
 }

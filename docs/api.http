@@ -38,6 +38,8 @@ Content-Type: application/json
 GET {{base}}/api/v1/health
 
 ### crear reserva: exitoso -> 201
+# El cuerpo incluye notificacion: ENVIADA o NO_ENVIADA.
+# Si Resend falla, la reserva igual queda creada y notificacion es NO_ENVIADA.
 POST {{base}}/api/v1/reservas
 Authorization: Bearer {{tokenEmpleado}}
 Content-Type: application/json

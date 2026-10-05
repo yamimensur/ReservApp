@@ -3,6 +3,7 @@ package com.reservapp.reserva.controller;
 import com.reservapp.asistencia.dto.AsistenciaResponse;
 import com.reservapp.asistencia.service.AsistenciaService;
 import com.reservapp.reserva.dto.*;
+import com.reservapp.reserva.service.CrearReservaConComprobante;
 import com.reservapp.reserva.service.ReservaService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.*;
@@ -16,8 +17,15 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/v1/reservas")
 public class ReservaController {
-    private final ReservaService reservas; private final AsistenciaService asistencias;
-    public ReservaController(ReservaService reservas, AsistenciaService asistencias) { this.reservas = reservas; this.asistencias = asistencias; }
+    private final ReservaService reservas;
+    private final CrearReservaConComprobante altas;
+    private final AsistenciaService asistencias;
+
+    public ReservaController(ReservaService reservas, CrearReservaConComprobante altas, AsistenciaService asistencias) {
+        this.reservas = reservas;
+        this.altas = altas;
+        this.asistencias = asistencias;
+    }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('EMPLEADO','TERCERIZADO')")
@@ -32,7 +40,7 @@ public class ReservaController {
     @PostMapping
     @PreAuthorize("hasAnyRole('EMPLEADO','TERCERIZADO')")
     public ResponseEntity<ReservaResponse> crear(@Valid @RequestBody CrearReservaRequest request, Authentication auth) {
-        ReservaResponse creada = reservas.crear(request, auth.getName());
+        ReservaResponse creada = altas.crear(request, auth.getName());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(creada.id()).toUri();
         return ResponseEntity.created(location).body(creada);
     }

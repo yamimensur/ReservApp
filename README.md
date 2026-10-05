@@ -51,7 +51,7 @@ Digitalizar la gestión de reservas del comedor para mejorar la planificación a
 - Compras y gestión de proveedores.
 - Procesamiento de pagos, descuentos de nómina o integración con sistemas externos de RR. HH.
 - Aplicación móvil nativa; la aplicación web será responsive.
-- Notificaciones automáticas por correo o mensajería.
+- Correos al modificar o cancelar, recordatorios y mensajería. El comprobante al crear la reserva se envía con Resend.
 - Cálculos nutricionales avanzados y calificación de comidas.
 
 ## Tecnologías
@@ -179,8 +179,10 @@ Cada aplicación debe disponer de su propio archivo de variables locales, sin ve
 | `DB_NAME` | Nombre de la base de datos. |
 | `DB_USERNAME` | Usuario de la base de datos. |
 | `DB_PASSWORD` | Contraseña de la base de datos. |
-| `JWT_SECRET` | Clave secreta usada para firmar tokens JWT. |
+| `JWT_SECRET` | Clave secreta usada para firmar tokens JWT. Sin ella el backend no arranca. |
 | `CORS_ALLOWED_ORIGINS` | Orígenes permitidos para el frontend. |
+| `RESEND_API_KEY` | Clave de Resend para el comprobante de reserva. Si falta, el backend arranca igual y la reserva responde `notificacion: NO_ENVIADA`. En Render la carga Cecilia. |
+| `RESEND_FROM` | Remitente del comprobante. Por defecto `ReservApp <onboarding@resend.dev>`. |
 
 ### Frontend
 
