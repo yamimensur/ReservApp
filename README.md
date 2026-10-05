@@ -2,6 +2,21 @@
 
 Aplicación web para la gestión integral de un comedor corporativo. Permite a empleados y personal tercerizado reservar su almuerzo, mientras que los administradores planifican menús, registran asistencias y obtienen información para la operación diaria.
 
+## Equipo
+
+- Yamile Mensur — responsable del repositorio (creó el repo y tiene la cuenta de Vercel)
+- Aldana Muñoz
+- Virginia Martinez
+- Cecilia Nuñez — cuenta de Render (backend en producción)
+
+## Producción
+
+- **Frontend:** https://reserv-app-hazel.vercel.app
+- **API:** https://reservapp-api-v7dk.onrender.com (estado: `/api/v1/health`)
+- **Base de datos:** Supabase (PostgreSQL)
+
+El plan gratuito de Render apaga el servicio tras unos minutos sin tráfico: el primer pedido puede tardar uno o dos minutos. Ver [ADR 0002](docs/adr/0002-hosting-render-supabase.md).
+
 ## Objetivo
 
 Digitalizar la gestión de reservas del comedor para mejorar la planificación alimentaria, reducir desperdicios y ofrecer a cada persona opciones compatibles con sus restricciones alimenticias.
@@ -57,8 +72,8 @@ Digitalizar la gestión de reservas del comedor para mejorar la planificación a
 | Testing frontend | Vitest |
 | Integraciones externas | Cloudinary, Resend, Mercado Pago, Maps u otras según la necesidad del producto |
 | Deploy frontend | Vercel |
-| Deploy backend | Render o Railway |
-| Base de datos en producción | Supabase PostgreSQL, Neon o Railway |
+| Deploy backend | Render (Docker) |
+| Base de datos en producción | Supabase PostgreSQL |
 | Repositorio | GitHub |
 
 ## Estructura del proyecto
@@ -177,7 +192,7 @@ Ejemplo:
 VITE_API_URL=http://localhost:8080
 ```
 
-En despliegue, el frontend de Vercel debe definir `VITE_API_URL` con el dominio público HTTPS del backend de Railway, sin una barra final. El backend debe definir `CORS_ALLOWED_ORIGINS` con el dominio público de Vercel. Si hay más de un origen autorizado, se separan con comas.
+En despliegue, el frontend de Vercel debe definir `VITE_API_URL` con el dominio público HTTPS del backend de Render, sin una barra final. El backend debe definir `CORS_ALLOWED_ORIGINS` con el dominio público de Vercel. Si hay más de un origen autorizado, se separan con comas.
 
 El endpoint público `GET /api/v1/health` permite comprobar la conexión sin autenticación. El resto de las rutas bajo `/api` permanece protegido.
 
@@ -222,8 +237,8 @@ Las pruebas del cliente se realizarán con Vitest.
 La propuesta de despliegue es independiente por componente:
 
 - Frontend: Vercel.
-- Backend: Render o Railway.
-- Base de datos: Supabase PostgreSQL, Neon o Railway.
+- Backend: Render, con la imagen definida en `backend/Dockerfile`. Se despliega automáticamente desde `main`.
+- Base de datos: Supabase PostgreSQL, conectada por *Session pooler*.
 
 Antes de desplegar, configura las variables de producción en cada plataforma, incluyendo `JWT_SECRET`, las credenciales de PostgreSQL y `CORS_ALLOWED_ORIGINS` con el dominio público del frontend.
 
