@@ -187,11 +187,19 @@ El flujo principal es la reserva de almuerzo.
 
 ## 8. Integración externa
 
-**Cuál:** no se requiere una integración externa obligatoria para el alcance inicial.
+**Cuál:** [Resend](https://resend.com/) (`POST https://api.resend.com/emails`). La credencial es `RESEND_API_KEY`, cargada en Render. Si falta, la aplicación arranca igual: el correo es complementario y no usa fail fast como `JWT_SECRET`. El remitente por defecto, sin dominio propio, es `ReservApp <onboarding@resend.dev>`. En ese modo Resend solo entrega a la casilla de la cuenta que generó la clave; alcanza para la demo.
 
-**Para qué:** el sistema utilizará credenciales propias asociadas a correos corporativos; no se contempla, por ahora, integración con nómina, pagos, correo ni mensajería.
+**Para qué:** al crear una reserva, enviar un comprobante a la persona con lo que eligió (entrada, plato principal, postre y bebida), el día, el límite para modificar o cancelar (09:00 del día de la reserva) y el código de reserva como un dato más. No se envía al modificar, al cancelar ni como recordatorio.
 
-**Qué pasa si se cae:** no aplica en la primera versión. Si se agregan integraciones futuras, deberán documentar su objetivo, datos intercambiados, tratamiento de errores y procedimiento de contingencia antes de implementarse.
+**Qué pasa si se cae:** el envío ocurre después de que la reserva quedó guardada. Timeout de 5 segundos. Cualquier falla (sin clave, timeout, 4xx o 5xx) se registra en el log con el código de reserva y no se propaga. `POST /api/v1/reservas` responde `201` con `notificacion: NO_ENVIADA`. La reserva permanece. Si la reserva se rechaza (por ejemplo, duplicada, `409`), no se intenta enviar ningún correo.
+
+| Operación | ¿Envía el comprobante? | Si Resend no responde o la credencial es inválida |
+|---|---|---|
+| Crear una reserva válida | Sí, después del commit | `201`, reserva guardada, `notificacion: NO_ENVIADA`, error en el log. |
+| Crear una reserva rechazada | No | No hay correo. La respuesta sigue siendo el error de la regla (`409`, `422` o `404`). |
+| Iniciar sesión, consultar menú, modificar, cancelar, asistencia, liquidación | No | Esas operaciones no cambian. |
+
+**Mejora futura:** incluir en el comprobante un QR del código de reserva, para que la persona no tenga que dictarlo al retirar el pedido.
 
 ## 9. Fuera de alcance
 
@@ -200,6 +208,6 @@ El flujo principal es la reserva de almuerzo.
 - Procesamiento de pagos, facturación o descuentos automáticos de nómina.
 - Integración automática con sistemas externos de Recursos Humanos o contabilidad.
 - Aplicación móvil nativa.
-- Notificaciones automáticas por correo electrónico o mensajería.
+- Correos al modificar o cancelar una reserva, reintentos automáticos, recordatorios y mensajería. El comprobante al crear la reserva está en la sección 8. El QR del código queda como mejora futura.
 - Gestión nutricional avanzada, cálculo de calorías o recomendaciones dietéticas personalizadas.
 - Calificaciones de comidas o encuestas de satisfacción de empleados.

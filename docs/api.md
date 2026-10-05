@@ -12,7 +12,7 @@ La API usa JSON, el prefijo `/api/v1` y autenticación JWT salvo donde se indiqu
 | `PATCH /api/v1/usuarios/me/restricciones` | Actualiza restricciones propias | Empleado, Tercerizado | `200`; `400` body inválido; `404` restricción inexistente |
 | `GET /api/v1/menus?fecha=AAAA-MM-DD` | Consulta el menú aplicable y sus compatibilidades | Empleado, Tercerizado | `200`; `400` fecha inválida; `404` menú no publicado |
 | `GET /api/v1/reservas?page=0&size=20` | Lista las reservas de la persona autenticada | Empleado, Tercerizado | `200`; `401`; `403` rol sin acceso |
-| `POST /api/v1/reservas` | Registra una reserva propia | Empleado, Tercerizado | `201`; `400` body inválido; `404` menú/comida inexistente; `409` reserva duplicada; `422` fecha, temporada, menú o selección incompatibles |
+| `POST /api/v1/reservas` | Registra una reserva propia y, si quedó guardada, intenta enviar el comprobante | Empleado, Tercerizado | `201` con `notificacion`: `ENVIADA` o `NO_ENVIADA`; `400` body inválido; `404` menú/comida inexistente; `409` reserva duplicada; `422` fecha, temporada, menú o selección incompatibles |
 | `GET /api/v1/reservas/{id}` | Consulta una reserva propia | Empleado, Tercerizado | `200`; `404` ajena o inexistente |
 | `PATCH /api/v1/reservas/{id}` | Modifica las comidas de una reserva propia | Empleado, Tercerizado | `200`; `400` body inválido; `404` ajena o reserva/comida inexistente; `409` horario vencido; `422` selección inválida |
 | `DELETE /api/v1/reservas/{id}` | Cancela lógicamente una reserva propia | Empleado, Tercerizado | `204`; `404` ajena o inexistente; `409` horario vencido |
@@ -49,6 +49,7 @@ Cada fila sale de un *"caso de error"* de un criterio de aceptación de `docs/sp
 | `POST /api/v1/reservas` | No se seleccionó exactamente un plato principal | `422` | "Debe seleccionar exactamente un plato principal" | regla | H2 |
 | `POST /api/v1/reservas` | La selección incluye una comida inactiva o incompatible con las restricciones del usuario | `422` | "La selección contiene una comida inactiva o incompatible" | regla | H2 |
 | `POST /api/v1/reservas` | Ya existe una reserva del usuario para esa fecha | `409` | "Ya existe una reserva para la fecha indicada" | regla | H2 |
+| `POST /api/v1/reservas` | La reserva se guardó y Resend no pudo enviar el comprobante | `201` | La reserva queda creada. `notificacion` es `NO_ENVIADA`. El error queda en el log, con el código de reserva. | integración | H2 |
 | `PATCH /api/v1/reservas/{id}` | La reserva no existe o pertenece a otra persona | `404` | "No existe la reserva" | consulta | H3 |
 | `PATCH /api/v1/reservas/{id}` | Venció el horario de modificación (09:00 del día de la reserva) | `409` | "Venció el horario de modificación o cancelación" | regla | H3 |
 | `PATCH /api/v1/reservas/{id}` | La nueva selección repite alguno de los casos de selección inválida de arriba (comida ajena al menú, sin plato principal, incompatible) | `422` | según el caso, igual que en `POST /api/v1/reservas` | regla | H3 |
