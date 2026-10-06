@@ -3,6 +3,7 @@ package com.reservapp.notificacion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ public class NotificadorResend implements NotificadorCorreo {
     private final String remitente;
     private final RestClient cliente;
 
+    @Autowired
     public NotificadorResend(
             @Value("${app.notificacion.api-key:}") String apiKey,
             @Value("${app.notificacion.remitente:ReservApp <onboarding@resend.dev>}") String remitente,
