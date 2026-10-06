@@ -49,7 +49,7 @@ public class ReservaService {
         ZonedDateTime ahora = ZonedDateTime.now(clock);
         ReservaReglas.validarCreacion(request.fecha(), ahora, usuario, menu, seleccion, request.comidaIds());
 
-        if (reservas.existsByUsuarioIdAndFecha(usuario.getId(), request.fecha()))
+        if (reservas.existsByUsuarioIdAndFechaAndEstado(usuario.getId(), request.fecha(), EstadoReserva.ACTIVA))
             throw new ReglaNegocioException(HttpStatus.CONFLICT, "Ya existe una reserva para la fecha indicada");
         Reserva reserva = new Reserva(UUID.randomUUID().toString(), usuario, menu, request.fecha(), Set.copyOf(seleccion), clock.instant());
         return response(reservas.save(reserva));

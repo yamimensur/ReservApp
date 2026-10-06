@@ -79,7 +79,7 @@ Criterios de aceptación:
 Criterios de aceptación:
 
 - [ ] Dado un menú publicado para una fecha válida, cuando la persona lo consulta, entonces ve las opciones de entrada, plato principal, postre y bebida, indicando cuáles son compatibles con sus restricciones.
-- [ ] Dado un menú disponible, cuando selecciona un plato principal y confirma la reserva, entonces el sistema registra una única reserva para esa persona y fecha.
+- [ ] Dado un menú disponible, cuando selecciona un plato principal y confirma la reserva, entonces el sistema registra una única reserva activa para esa persona y fecha.
 - [ ] Dado un perfil con restricciones, cuando el menú tiene alternativas compatibles, entonces el sistema sugiere al menos un plato principal compatible.
 - [ ] Caso de error: cuando no se selecciona un plato principal, se intenta reservar fuera del plazo o se elige una comida incompatible, el sistema no crea la reserva y explica el motivo.
 
@@ -91,6 +91,8 @@ Criterios de aceptación:
 
 - [ ] Dada una reserva propia dentro del horario permitido, cuando la persona modifica sus elecciones, entonces la reserva queda actualizada y se vuelven a validar las restricciones.
 - [ ] Dada una reserva propia dentro del horario permitido, cuando la persona la cancela, entonces deja de contabilizarse en la demanda del día.
+- [ ] Dada una reserva cancelada, cuando la persona vuelve a reservar para esa fecha antes de las 09:00, entonces se crea una nueva reserva activa y se conserva la cancelada en el historial.
+- [ ] Caso de error: cuando ya existe una reserva activa para esa persona y fecha, el sistema rechaza una nueva reserva con estado HTTP 409.
 - [ ] Caso de error: cuando la hora límite ya venció, el sistema no permite modificar ni cancelar la reserva.
 
 ### H4 — Gestionar comidas y temporadas
@@ -140,7 +142,7 @@ El flujo principal es la reserva de almuerzo.
 
 ## 6. Reglas de negocio
 
-- Una persona solo puede tener una reserva por día.
+- Una persona solo puede tener una reserva activa por día. Una reserva cancelada no impide volver a reservar para esa fecha, siempre que sea antes de las 09:00.
 - Solo se puede reservar para días laborables y hasta siete días hacia adelante.
 - Las reservas, modificaciones y cancelaciones se permiten únicamente antes de las 09:00 del día correspondiente.
 - El plato principal es obligatorio; entrada, postre y bebida son opcionales.
