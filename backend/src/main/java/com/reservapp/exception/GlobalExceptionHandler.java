@@ -9,6 +9,9 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,6 +34,21 @@ public class GlobalExceptionHandler {
         Map<String, String> fields = new LinkedHashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(e -> fields.putIfAbsent(e.getField(), e.getDefaultMessage()));
         return response(HttpStatus.BAD_REQUEST, "La solicitud contiene datos inválidos", fields);
+    }
+        // El cuerpo no es un JSON válido (mal escrito o con un tipo que no corresponde).
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    ResponseEntity<ApiError> cuerpoIlegible(HttpMessageNotReadableException ex) {
+        return response(HttpStatus.BAD_REQUEST, "El cuerpo de la solicitud no es un JSON válido", Map.of());
+    }
+    // Un parámetro de la URL no tiene el formato esperado (por ejemplo, /reservas/abc).
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    ResponseEntity<ApiError> tipoInvalido(MethodArgumentTypeMismatchException ex) {
+        return response(HttpStatus.BAD_REQUEST, "El parámetro '" + ex.getName() + "' tiene un formato inválido", Map.of());
+    }
+    // La ruta pedida no existe en la API.
+    @ExceptionHandler(NoResourceFoundException.class)
+    ResponseEntity<ApiError> rutaInexistente(NoResourceFoundException ex) {
+        return response(HttpStatus.NOT_FOUND, "La ruta no existe", Map.of());
     }
     // @PreAuthorize lanza AccessDeniedException dentro del controller. Sin este
     // manejador la atraparía el genérico de Exception y respondería 500 en lugar de 403.
