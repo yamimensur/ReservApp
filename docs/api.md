@@ -34,6 +34,19 @@ La API usa JSON, el prefijo `/api/v1` y autenticación JWT salvo donde se indiqu
 | `GET /api/v1/liquidaciones/{id}/exportacion?formato=csv|pdf` | Exporta una liquidación | Administrador, RR. HH. autorizado | `200`; `400`; `403`; `404` |
 | `GET /api/v1/reportes/resumen?desde=AAAA-MM-DD&hasta=AAAA-MM-DD` | Resume asistencia, consumo y preferencias | Administrador, RR. HH. autorizado | `200`; `400`; `403` |
 
+## Errores comunes a todos los endpoints
+
+Todas las respuestas de error usan el formato `ApiError`: `timestamp`, `status`, `error`, `message` y `fields`. Criterio completo en el ADR 0006.
+
+| Situación | Código | `message` |
+| --- | --- | --- |
+| Falta el token, o es inválido o está vencido | `401` | "Necesitás iniciar sesión" |
+| El rol no alcanza para la operación | `403` | "No tenés permiso para esta acción" |
+| El cuerpo no es un JSON válido | `400` | "El cuerpo de la solicitud no es un JSON válido" |
+| Un parámetro de la URL tiene formato inválido (por ejemplo, `/reservas/abc`) | `400` | "El parámetro 'id' tiene un formato inválido" |
+| La ruta no existe | `404` | "La ruta no existe" |
+| Error no previsto | `500` | "Error interno" (el detalle queda solo en el log) |
+
 ## Los errores, en detalle
 
 Cada fila sale de un *"caso de error"* de un criterio de aceptación de `docs/spec.md`. La columna *Capa* indica quién lo agarra: **Zod-equiv.** son las validaciones de forma que ya cubre Jakarta Validation (`@Valid` en el DTO); **regla** es lógica de negocio que necesita ir a buscar datos antes de poder decidir, hoy implementada en `ReservaService`.
