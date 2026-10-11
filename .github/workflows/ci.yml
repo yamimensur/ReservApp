@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Solo lectura: el workflow no necesita escribir en el repo
+permissions:
+  contents: read
+
+# Si se pushea de nuevo a la misma rama, cancela la corrida anterior
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      # verify corre los tests unitarios (*Test) y los de integración (*IT),
+      # que levantan la app completa contra un PostgreSQL real con Testcontainers
+      - name: Tests unitarios y de integración
+        run: ./mvnw -B verify
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      # Node 24 trae npm 11: con npm 10 la instalación falla por un bug con las peer dependencies
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+      - name: Build
+        run: npm run build
+      - name: Tests
+        run: npm test
