@@ -1,3 +1,4 @@
+import { EVENTO_SESION_VENCIDA } from "@/lib/sesion";
 import type { ApiErrorBody } from "@/types/api";
 import { borrarToken, leerToken } from "./tokenStorage";
 
@@ -40,7 +41,10 @@ export async function pedirApi<T>(ruta: string, opciones: RequestInit = {}): Pro
     throw new ErrorApi(0, "No pudimos conectarnos con el servidor. Revisá tu conexión y probá de nuevo.");
   }
 
-  if (respuesta.status === 401 && token) borrarToken();
+if (respuesta.status === 401 && token) {
+  borrarToken();
+  globalThis.dispatchEvent?.(new Event(EVENTO_SESION_VENCIDA));
+}
 
   if (!respuesta.ok) {
     const cuerpo: unknown = await respuesta.json().catch(() => null);
