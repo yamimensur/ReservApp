@@ -70,6 +70,13 @@ describe("rutas", () => {
     expect(await screen.findByRole("heading", { name: "No encontramos esta página" })).toBeDefined();
   });
 
+  it("/sistema muestra el catálogo de componentes a cualquier usuario logueado", async () => {
+    logueadoComo("ADMINISTRADOR");
+    abrir("/sistema");
+    expect(await screen.findByRole("heading", { name: "Sistema de diseño" })).toBeDefined();
+    expect(screen.getAllByText("✓ Activa").length).toBeGreaterThan(0);
+  });
+
   it("Salir cierra la sesión y vuelve a /ingresar", async () => {
     logueadoComo("EMPLEADO");
     const router = abrir("/menu");

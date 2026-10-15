@@ -6,6 +6,7 @@ import { EnConstruccionPage } from "@/pages/EnConstruccionPage";
 import { InicioPage } from "@/pages/InicioPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
+import { SistemaPage } from "@/pages/SistemaPage";
 
 /** Mapa de rutas. Las públicas van sin sesión; el resto pasa por RutaProtegida. */
 export const rutas: RouteObject[] = [
@@ -20,6 +21,7 @@ export const rutas: RouteObject[] = [
         element: <AppLayout />,
         children: [
           { path: "/", element: <InicioPage /> },
+          { path: "/sistema", element: <SistemaPage /> },
           {
             element: <RutaProtegida roles={["EMPLEADO", "TERCERIZADO"]} />,
             children: [
