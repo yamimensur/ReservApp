@@ -12,9 +12,9 @@
     --font-sans: 'Source Sans 3 Variable', system-ui, sans-serif;
 
     /* Colores de apoyo del manual (además de los tokens de shadcn) */
-    --color-verde-hoja: var(--verde-hoja);
-    --color-verde-hoja-oscuro: var(--verde-hoja-oscuro);
     --color-verde-lima: var(--verde-lima);
+    --color-verde-oscuro: var(--verde-oscuro);
+    --color-verde-noche: var(--verde-noche);
     --color-brote: var(--brote);
     --color-aviso: var(--aviso);
     --color-aviso-fondo: var(--aviso-fondo);
@@ -68,37 +68,37 @@
     --card-foreground: #1C2B25;
     --popover: #FFFFFF;
     --popover-foreground: #1C2B25;
-    --primary: #034A37;              /* verde profundo, 10,3:1 con blanco */
+    --primary: #34702A;              /* verde bosque, del logo: 6,0:1 con blanco */
     --primary-foreground: #FFFFFF;
-    --secondary: #DCEDE6;            /* menta */
-    --secondary-foreground: #034A37;
+    --secondary: #E4F0DC;            /* brote */
+    --secondary-foreground: #1F3D1A;
     --muted: #ECEFED;
     --muted-foreground: #5A6B63;     /* musgo, 4,9:1 sobre muted */
-    --accent: #DCEDE6;               /* menta: hover y selección */
-    --accent-foreground: #034A37;
+    --accent: #E4F0DC;               /* brote: hover y selección */
+    --accent-foreground: #1F3D1A;
     --destructive: #B3261E;          /* tomate, 6,5:1 con blanco */
     --border: #DDE5DF;               /* línea */
     --input: #7A8982;                /* borde de campo, 3,7:1 sobre blanco */
-    --ring: #156E5C;                 /* verde petróleo: foco del teclado */
-    --chart-1: #034A37;
-    --chart-2: #156E5C;
-    --chart-3: #487B38;
-    --chart-4: #96C03C;
+    --ring: #285A21;                 /* verde oscuro: foco del teclado, 7,5:1 */
+    --chart-1: #34702A;
+    --chart-2: #82B826;
+    --chart-3: #285A21;
+    --chart-4: #1F3D1A;
     --chart-5: #5A6B63;
     --radius: 0.5rem;
     --sidebar: #FFFFFF;
     --sidebar-foreground: #1C2B25;
-    --sidebar-primary: #034A37;
+    --sidebar-primary: #34702A;
     --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #DCEDE6;
-    --sidebar-accent-foreground: #034A37;
+    --sidebar-accent: #E4F0DC;
+    --sidebar-accent-foreground: #1F3D1A;
     --sidebar-border: #DDE5DF;
-    --sidebar-ring: #156E5C;
+    --sidebar-ring: #285A21;
 
-    --verde-hoja: #487B38;
-    --verde-hoja-oscuro: #3B6A2C;    /* texto de éxito, 5,5:1 sobre brote */
-    --verde-lima: #96C03C;           /* solo acento: nunca texto sobre claro */
-    --brote: #E6F2D3;
+    --verde-lima: #82B826;           /* del logo. Solo acento: nunca texto sobre claro */
+    --verde-oscuro: #285A21;         /* texto de éxito, 6,9:1 sobre brote */
+    --verde-noche: #1F3D1A;          /* títulos y fondos oscuros */
+    --brote: #E4F0DC;
     --aviso: #8A5E06;
     --aviso-fondo: #FBEFD3;
     --error-fondo: #FBE4E1;
