@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSesion } from "@/hooks/useSesion";
+import { destinoAlIngresar } from "@/lib/roles";
 import { ErrorApi } from "@/services/apiClient";
 
 interface ErroresCampos {
@@ -49,7 +50,9 @@ export function LoginPage() {
   }, [enviando]);
 
   // Quien ya tiene sesión no necesita ver el login.
-  if (sesion.estado === "autenticado") return <Navigate to={desde} replace />;
+  if (sesion.estado === "autenticado") {
+    return <Navigate to={destinoAlIngresar(sesion.usuario.rol, desde)} replace />;
+  }
 
   const alEnviar = async (evento: FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
@@ -60,8 +63,8 @@ export function LoginPage() {
 
     setEnviando(true);
     try {
-      await ingresar({ correo: correo.trim(), password });
-      navigate(desde, { replace: true });
+      const usuario = await ingresar({ correo: correo.trim(), password });
+      navigate(destinoAlIngresar(usuario.rol, desde), { replace: true });
     } catch (error) {
       setErrorGeneral(error instanceof ErrorApi ? error.message : "Ocurrió un error inesperado. Probá de nuevo.");
       setEnviando(false);
