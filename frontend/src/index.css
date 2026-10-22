@@ -1,1 +1,120 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/montserrat";
+@import "@fontsource-variable/source-sans-3";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    /* Tipografía del manual de marca */
+    --font-heading: 'Montserrat Variable', sans-serif;
+    --font-sans: 'Source Sans 3 Variable', system-ui, sans-serif;
+
+    /* Colores de apoyo del manual (además de los tokens de shadcn) */
+    --color-verde-lima: var(--verde-lima);
+    --color-verde-oscuro: var(--verde-oscuro);
+    --color-verde-noche: var(--verde-noche);
+    --color-brote: var(--brote);
+    --color-aviso: var(--aviso);
+    --color-aviso-fondo: var(--aviso-fondo);
+    --color-error-fondo: var(--error-fondo);
+
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Paleta del manual de marca de ReservApp. Contrastes verificados (WCAG AA). */
+:root {
+    --background: #F3F6F1;           /* niebla */
+    --foreground: #1C2B25;           /* tinta, 13,6:1 sobre niebla */
+    --card: #FFFFFF;
+    --card-foreground: #1C2B25;
+    --popover: #FFFFFF;
+    --popover-foreground: #1C2B25;
+    --primary: #34702A;              /* verde bosque, del logo: 6,0:1 con blanco */
+    --primary-foreground: #FFFFFF;
+    --secondary: #E4F0DC;            /* brote */
+    --secondary-foreground: #1F3D1A;
+    --muted: #ECEFED;
+    --muted-foreground: #5A6B63;     /* musgo, 4,9:1 sobre muted */
+    --accent: #E4F0DC;               /* brote: hover y selección */
+    --accent-foreground: #1F3D1A;
+    --destructive: #B3261E;          /* tomate, 6,5:1 con blanco */
+    --border: #DDE5DF;               /* línea */
+    --input: #7A8982;                /* borde de campo, 3,7:1 sobre blanco */
+    --ring: #285A21;                 /* verde oscuro: foco del teclado, 7,5:1 */
+    --chart-1: #34702A;
+    --chart-2: #82B826;
+    --chart-3: #285A21;
+    --chart-4: #1F3D1A;
+    --chart-5: #5A6B63;
+    --radius: 0.5rem;
+    --sidebar: #FFFFFF;
+    --sidebar-foreground: #1C2B25;
+    --sidebar-primary: #34702A;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #E4F0DC;
+    --sidebar-accent-foreground: #1F3D1A;
+    --sidebar-border: #DDE5DF;
+    --sidebar-ring: #285A21;
+
+    --verde-lima: #82B826;           /* del logo. Solo acento: nunca texto sobre claro */
+    --verde-oscuro: #285A21;         /* texto de éxito, 6,9:1 sobre brote */
+    --verde-noche: #1F3D1A;          /* títulos y fondos oscuros */
+    --brote: #E4F0DC;
+    --aviso: #8A5E06;
+    --aviso-fondo: #FBEFD3;
+    --error-fondo: #FBE4E1;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  h1, h2, h3 {
+    @apply font-heading;
+  }
+}

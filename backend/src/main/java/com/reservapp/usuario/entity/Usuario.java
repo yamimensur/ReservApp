@@ -31,6 +31,7 @@ public class Usuario {
 
     public Long getId() { return id; }
     public String getCorreo() { return correo; }
+    public TipoUsuario getTipoUsuario() { return tipoUsuario; }
     public EstadoUsuario getEstado() { return estado; }
     public String getPasswordHash() { return passwordHash; }
     public Rol getRol() { return rol; }
