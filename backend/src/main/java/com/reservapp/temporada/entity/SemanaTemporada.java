@@ -17,6 +17,7 @@ public class SemanaTemporada {
         this.numero = numero;
     }
 
+    public Long getId() { return id; }
     public Temporada getTemporada() { return temporada; }
     public Short getNumero() { return numero; }
 }

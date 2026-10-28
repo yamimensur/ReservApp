@@ -23,6 +23,7 @@ public class Temporada {
         this.estado = estado;
     }
 
+    public Long getId() { return id; }
     public LocalDate getFechaDesde() { return fechaDesde; }
     public LocalDate getFechaHasta() { return fechaHasta; }
     public EstadoTemporada getEstado() { return estado; }
