@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from "vitest";
-import { diasDisponibles, fechaLegible, proximoLaborable, diaSemanaCorto, numeroDia } from "./fecha";
+import { diasDisponibles, fechaLegible, hoyISO, proximoLaborable, diaSemanaCorto, numeroDia } from "./fecha";
 
 /** Fija Date.now y new Date() al instante dado (ISO). */
 function fijarFecha(iso: string) {
@@ -7,6 +7,14 @@ function fijarFecha(iso: string) {
 }
 
 afterEach(() => vi.useRealTimers());
+
+describe("hoyISO", () => {
+  it("devuelve la fecha local incluso después de las 21 hs (UTC-3)", () => {
+    // 28 de octubre a las 22:00 en Argentina = 29 de octubre 01:00 UTC
+    vi.useFakeTimers({ now: new Date("2026-10-28T22:00:00-03:00") });
+    expect(hoyISO()).toBe("2026-10-28");
+  });
+});
 
 describe("fechaLegible", () => {
   it("formatea una fecha ISO como texto legible en español", () => {

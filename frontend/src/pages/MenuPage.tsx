@@ -10,6 +10,7 @@ import { crearReserva } from "@/services/reservaService";
 import { ErrorApi } from "@/services/apiClient";
 import type { ComidaMenu, MenuResponse } from "@/types/menu";
 import type { ReservaResponse } from "@/types/reserva";
+import { SinDatos } from "@/components/SinDatos";
 import { cn } from "@/lib/utils";
 
 const NOMBRE_TIPO: Record<ComidaMenu["tipo"], string> = {
@@ -168,6 +169,7 @@ export function MenuPage() {
   const [menu, setMenu] = useState<MenuResponse | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sinMenu, setSinMenu] = useState(false);
 
   const [seleccionadas, setSeleccionadas] = useState<Set<number>>(new Set());
   const [enviando, setEnviando] = useState(false);
@@ -177,6 +179,7 @@ export function MenuPage() {
   const cargar = useCallback((fechaSeleccionada: string) => {
     setCargando(true);
     setError(null);
+    setSinMenu(false);
     setMenu(null);
     setSeleccionadas(new Set());
     setErrorReserva(null);
@@ -190,7 +193,7 @@ export function MenuPage() {
       .catch((err: unknown) => {
         if (err instanceof DOMException && err.name === "AbortError") return;
         if (err instanceof ErrorApi && err.status === 404) {
-          setError("No hay un menú publicado para esta fecha.");
+          setSinMenu(true);
         } else if (err instanceof ErrorApi) {
           setError(err.message);
         } else {
@@ -267,6 +270,13 @@ export function MenuPage() {
       <h2 className="text-lg font-semibold">{fechaLegible(fecha)}</h2>
 
       {cargando && <MenuSkeleton />}
+
+      {sinMenu && (
+        <SinDatos
+          titulo="No hay un menú publicado para esta fecha."
+          detalle="Probá seleccionando otro día."
+        />
+      )}
 
       {error && (
         <Alert variant="destructive">

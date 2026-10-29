@@ -104,7 +104,7 @@ describe("MenuPage", () => {
     expect(botonMilanesa?.getAttribute("aria-pressed")).toBe("true");
   });
 
-  it("muestra error cuando no hay menú para la fecha", async () => {
+  it("muestra estado vacío cuando no hay menú para la fecha", async () => {
     guardarToken("jwt-test");
     const fetchMock = vi.fn()
       .mockResolvedValueOnce(respuestaJson(USUARIO))
@@ -117,6 +117,7 @@ describe("MenuPage", () => {
     abrirMenu();
 
     expect(await screen.findByText("No hay un menú publicado para esta fecha.")).toBeDefined();
+    expect(screen.getByText("Probá seleccionando otro día.")).toBeDefined();
   });
 
   it("crea la reserva y muestra el código de confirmación", async () => {

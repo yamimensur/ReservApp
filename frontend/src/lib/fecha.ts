@@ -12,7 +12,8 @@ export function fechaLegible(iso: string): string {
 
 /** Devuelve la fecha de hoy en formato AAAA-MM-DD (zona local). */
 export function hoyISO(): string {
-  return new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 /** Suma `dias` días a una fecha ISO y devuelve el resultado en ISO. */
