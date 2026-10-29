@@ -10,8 +10,9 @@ afterEach(() => vi.useRealTimers());
 
 describe("hoyISO", () => {
   it("devuelve la fecha local incluso después de las 21 hs (UTC-3)", () => {
-    // 28 de octubre a las 22:00 en Argentina = 29 de octubre 01:00 UTC
-    vi.useFakeTimers({ now: new Date("2026-10-28T22:00:00-03:00") });
+    // 28 de octubre a las 22:00 en Argentina = 29 de octubre 01:00 UTC.
+    // CI corre con TZ=America/Argentina/Buenos_Aires para reproducir esto.
+    vi.useFakeTimers({ now: new Date("2026-10-29T01:00:00Z") });
     expect(hoyISO()).toBe("2026-10-28");
   });
 });

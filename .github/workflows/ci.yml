@@ -52,3 +52,5 @@ jobs:
         run: npm run build
       - name: Tests
         run: npm test
+        env:
+          TZ: America/Argentina/Buenos_Aires
