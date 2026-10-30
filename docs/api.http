@@ -37,6 +37,23 @@ Content-Type: application/json
 ### health: exitoso -> 200
 GET {{base}}/api/v1/health
 
+### consultar menú del día: exitoso -> 200
+# Devuelve el menú aplicable a la fecha con las comidas agrupadas por tipo.
+# Cada comida incluye "compatible" (true/false) según las restricciones del usuario.
+GET {{base}}/api/v1/menus?fecha={{$datetime "YYYY-MM-DD" 1 d}}
+Authorization: Bearer {{tokenEmpleado}}
+
+### consultar menú: fecha sin temporada publicada -> 404
+GET {{base}}/api/v1/menus?fecha=2020-01-01
+Authorization: Bearer {{tokenEmpleado}}
+
+### consultar menú: sin token -> 401
+GET {{base}}/api/v1/menus?fecha={{$datetime "YYYY-MM-DD" 1 d}}
+
+### consultar menú: con rol administrador -> 403
+GET {{base}}/api/v1/menus?fecha={{$datetime "YYYY-MM-DD" 1 d}}
+Authorization: Bearer {{tokenAdmin}}
+
 ### crear reserva: exitoso -> 201
 # El cuerpo incluye notificacion: ENVIADA o NO_ENVIADA.
 # Si Resend falla, la reserva igual queda creada y notificacion es NO_ENVIADA.

@@ -5,6 +5,7 @@ import { RutaProtegida } from "@/components/RutaProtegida";
 import { EnConstruccionPage } from "@/pages/EnConstruccionPage";
 import { InicioPage } from "@/pages/InicioPage";
 import { LoginPage } from "@/pages/LoginPage";
+import { MenuPage } from "@/pages/MenuPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { SistemaPage } from "@/pages/SistemaPage";
 
@@ -25,7 +26,7 @@ export const rutas: RouteObject[] = [
           {
             element: <RutaProtegida roles={["EMPLEADO", "TERCERIZADO"]} />,
             children: [
-              { path: "/menu", element: <EnConstruccionPage titulo="Menú del día" detalle="Flujo 2: reservar el almuerzo." /> },
+              { path: "/menu", element: <MenuPage /> },
               { path: "/mis-reservas", element: <EnConstruccionPage titulo="Mis reservas" detalle="Flujo 3: historial, modificar y cancelar." /> },
             ],
           },
