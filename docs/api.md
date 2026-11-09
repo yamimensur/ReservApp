@@ -28,7 +28,7 @@ La API usa JSON, el prefijo `/api/v1` y autenticación JWT salvo donde se indiqu
 | `PATCH /api/v1/temporadas/{id}` | Modifica una temporada en borrador | Administrador | `200`; `400`; `404`; `409` estado o fechas incompatibles |
 | `DELETE /api/v1/temporadas/{id}` | Elimina una temporada sin historial | Administrador | `204`; `404`; `409` publicada o utilizada |
 | `POST /api/v1/temporadas/{id}/publicacion` | Publica una temporada completa | Administrador | `201`; `404`; `409` incompleta, solapada o ya publicada |
-| `GET /api/v1/asistencias?fecha=AAAA-MM-DD&page=0&size=50` | Lista asistencias y reservas diarias | Administrador | `200`; `400`; `403` |
+| `GET /api/v1/asistencias?fecha=AAAA-MM-DD&page=0&size=50` | Lista las reservas activas de una fecha y, si ya se confirmó, la hora de asistencia | Administrador | `200`; `400` fecha inválida; `403` |
 | `POST /api/v1/liquidaciones` | Genera liquidaciones de un mes cerrado | Administrador, RR. HH. autorizado | `201`; `400`; `403`; `409` período abierto o ya liquidado |
 | `GET /api/v1/liquidaciones?page=0&size=20` | Lista liquidaciones permitidas | Administrador, RR. HH. autorizado | `200`; `403` |
 | `GET /api/v1/liquidaciones/{id}/exportacion?formato=csv|pdf` | Exporta una liquidación | Administrador, RR. HH. autorizado | `200`; `400`; `403`; `404` |
@@ -71,5 +71,5 @@ Cada fila sale de un *"caso de error"* de un criterio de aceptación de `docs/sp
 
 ## Estado de implementación de esta iteración
 
-Están implementados el health check, el login con JWT (`POST /api/v1/auth/login`), el CRUD REST de `Reserva` (donde `DELETE` cancela para preservar historial) y la confirmación de asistencia. El resto constituye el contrato derivado de las historias H1–H6 y se implementará en sus iteraciones correspondientes.
+Están implementados el health check, el login con JWT (`POST /api/v1/auth/login`), el perfil propio (`GET /api/v1/usuarios/me`), la consulta de menú, el CRUD REST de `Reserva` (donde `DELETE` cancela para preservar historial), el listado de reservas del día (`GET /api/v1/asistencias?fecha=`) y la confirmación de asistencia. El resto constituye el contrato derivado de las historias H1–H6 y se implementará en sus iteraciones correspondientes.
 

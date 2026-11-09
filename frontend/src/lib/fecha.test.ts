@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from "vitest";
-import { diasDisponibles, fechaLegible, hoyISO, proximoLaborable, diaSemanaCorto, numeroDia } from "./fecha";
+import { diasDisponibles, fechaLegible, horaArgentina, hoyISO, proximoLaborable, diaSemanaCorto, numeroDia } from "./fecha";
 
 /** Fija Date.now y new Date() al instante dado (ISO). */
 function fijarFecha(iso: string) {
@@ -14,6 +14,12 @@ describe("hoyISO", () => {
     // CI corre con TZ=America/Argentina/Buenos_Aires para reproducir esto.
     vi.useFakeTimers({ now: new Date("2026-10-29T01:00:00Z") });
     expect(hoyISO()).toBe("2026-10-28");
+  });
+});
+
+describe("horaArgentina", () => {
+  it("muestra la hora de Argentina aunque el instante venga en UTC", () => {
+    expect(horaArgentina("2026-11-09T15:10:00Z")).toBe("12:10");
   });
 });
 
