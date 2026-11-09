@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { diasDisponibles, diaSemanaCorto, fechaLegible, numeroDia, proximoLaborable } from "@/lib/fecha";
 import { obtenerMenu } from "@/services/menuService";
@@ -12,22 +10,7 @@ import type { ComidaMenu, MenuResponse } from "@/types/menu";
 import type { ReservaResponse } from "@/types/reserva";
 import { SinDatos } from "@/components/SinDatos";
 import { cn } from "@/lib/utils";
-
-const NOMBRE_TIPO: Record<ComidaMenu["tipo"], string> = {
-  ENTRADA: "Entrada",
-  PLATO_PRINCIPAL: "Plato principal",
-  POSTRE: "Postre",
-  BEBIDA: "Bebida",
-};
-
-const ORDEN_TIPO: ComidaMenu["tipo"][] = ["ENTRADA", "PLATO_PRINCIPAL", "POSTRE", "BEBIDA"];
-
-function agruparPorTipo(comidas: ComidaMenu[]): Map<ComidaMenu["tipo"], ComidaMenu[]> {
-  const grupos = new Map<ComidaMenu["tipo"], ComidaMenu[]>();
-  for (const tipo of ORDEN_TIPO) grupos.set(tipo, []);
-  for (const c of comidas) grupos.get(c.tipo)?.push(c);
-  return grupos;
-}
+import { SelectorComidas } from "@/components/SelectorComidas";
 
 /** Selección inicial: el primer plato principal compatible. */
 function seleccionInicial(comidas: ComidaMenu[]): Set<number> {
@@ -77,65 +60,6 @@ function MenuSkeleton() {
         </div>
       ))}
     </div>
-  );
-}
-
-function GrupoComidas({ tipo, comidas, seleccionadas, onToggle, deshabilitado }: {
-  tipo: ComidaMenu["tipo"];
-  comidas: ComidaMenu[];
-  seleccionadas: Set<number>;
-  onToggle: (comida: ComidaMenu) => void;
-  deshabilitado: boolean;
-}) {
-  if (comidas.length === 0) return null;
-  return (
-    <section className="space-y-2">
-      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{NOMBRE_TIPO[tipo]}</h3>
-      <ul className="grid gap-2 sm:grid-cols-2">
-        {comidas.map((c) => {
-          const activa = seleccionadas.has(c.id);
-          const bloqueada = !c.compatible;
-          return (
-            <li key={c.id}>
-              <button
-                type="button"
-                disabled={bloqueada || deshabilitado}
-                onClick={() => onToggle(c)}
-                aria-pressed={activa}
-                className="w-full text-left"
-              >
-                <Card size="sm" className={cn(
-                  "transition-colors",
-                  bloqueada && "opacity-60",
-                  activa && "ring-2 ring-primary",
-                )}>
-                  <CardContent className="flex items-center justify-between gap-2">
-                    <span className="flex items-center gap-2">
-                      <span className={cn(
-                        "flex size-4 shrink-0 items-center justify-center rounded border",
-                        activa ? "border-primary bg-primary text-primary-foreground" : "border-muted-foreground/40",
-                      )}>
-                        {activa && <CheckIcon />}
-                      </span>
-                      <span className={cn("text-sm", bloqueada && "line-through")}>{c.nombre}</span>
-                    </span>
-                    {bloqueada && <Badge variant="destructive">Incompatible</Badge>}
-                  </CardContent>
-                </Card>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-3">
-      <path fillRule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clipRule="evenodd" />
-    </svg>
   );
 }
 
@@ -210,25 +134,6 @@ export function MenuPage() {
     setFecha(f);
   };
 
-  const toggleComida = (comida: ComidaMenu) => {
-    setSeleccionadas((prev) => {
-      const next = new Set(prev);
-      if (next.has(comida.id)) {
-        next.delete(comida.id);
-      } else {
-        // Para platos principales: reemplazar en vez de agregar (solo 1 permitido)
-        if (comida.tipo === "PLATO_PRINCIPAL") {
-          const principales = menu?.comidas.filter((c) => c.tipo === "PLATO_PRINCIPAL") ?? [];
-          for (const p of principales) next.delete(p.id);
-        }
-        next.add(comida.id);
-      }
-      return next;
-    });
-  };
-
-  const grupos = menu ? agruparPorTipo(menu.comidas) : null;
-
   const principalSeleccionado = useMemo(() => {
     if (!menu) return false;
     return menu.comidas.some((c) => c.tipo === "PLATO_PRINCIPAL" && seleccionadas.has(c.id));
@@ -287,23 +192,17 @@ export function MenuPage() {
 
       {reserva && <ReservaExitosa reserva={reserva} />}
 
-      {grupos && !reserva && (
+      {menu && !reserva && (
         <>
           <p className="text-sm text-muted-foreground">
             Seleccioná las comidas que querés reservar. Es obligatorio elegir un plato principal.
           </p>
-          <div className="space-y-5">
-            {ORDEN_TIPO.map((tipo) => (
-              <GrupoComidas
-                key={tipo}
-                tipo={tipo}
-                comidas={grupos.get(tipo) ?? []}
-                seleccionadas={seleccionadas}
-                onToggle={toggleComida}
-                deshabilitado={enviando}
-              />
-            ))}
-          </div>
+          <SelectorComidas
+            comidas={menu.comidas}
+            seleccionadas={seleccionadas}
+            onChange={setSeleccionadas}
+            deshabilitado={enviando}
+          />
 
           {errorReserva && (
             <Alert variant="destructive">

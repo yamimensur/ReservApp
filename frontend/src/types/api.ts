@@ -6,3 +6,13 @@ export interface ApiErrorBody {
   message: string;
   fields?: Record<string, string> | null;
 }
+
+/** Campos de Page de Spring Data que consume la interfaz. */
+export interface Pagina<T> {
+  content: T[];
+  number: number;
+  totalPages: number;
+  totalElements: number;
+  first: boolean;
+  last: boolean;
+}
