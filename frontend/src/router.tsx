@@ -8,6 +8,7 @@ import { LoginPage } from "@/pages/LoginPage";
 import { MenuPage } from "@/pages/MenuPage";
 import { MisReservasPage } from "@/pages/MisReservasPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
+import { ReservasDelDiaPage } from "@/pages/ReservasDelDiaPage";
 import { SistemaPage } from "@/pages/SistemaPage";
 
 /** Mapa de rutas. Las públicas van sin sesión; el resto pasa por RutaProtegida. */
@@ -34,7 +35,7 @@ export const rutas: RouteObject[] = [
           {
             element: <RutaProtegida roles={["ADMINISTRADOR"]} />,
             children: [
-              { path: "/reservas-del-dia", element: <EnConstruccionPage titulo="Reservas del día" detalle="Flujo 4: control de asistencia." /> },
+              { path: "/reservas-del-dia", element: <ReservasDelDiaPage /> },
             ],
           },
           {

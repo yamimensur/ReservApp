@@ -13,9 +13,14 @@ function respuestaJson(cuerpo: unknown, status = 200): Response {
 
 function logueadoComo(rol: Rol) {
   guardarToken("jwt-de-prueba");
-  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(respuestaJson({
-    id: 1, correo: "persona@reservapp.demo", rol, tipoUsuario: "EMPLEADO", restricciones: [],
-  })));
+  vi.stubGlobal("fetch", vi.fn().mockImplementation((url: string) => {
+    if (String(url).includes("/api/v1/asistencias")) {
+      return Promise.resolve(respuestaJson({ content: [], number: 0, totalPages: 0, totalElements: 0, first: true, last: true }));
+    }
+    return Promise.resolve(respuestaJson({
+      id: 1, correo: "persona@reservapp.demo", rol, tipoUsuario: "EMPLEADO", restricciones: [],
+    }));
+  }));
 }
 
 function abrir(ruta: string) {

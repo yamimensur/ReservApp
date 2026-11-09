@@ -17,6 +17,25 @@ export interface ModificarReservaRequest {
   comidaIds: number[];
 }
 
+/** Reserva activa del día, para el administrador. */
+export interface ReservaDelDia {
+  id: number;
+  codigo: string;
+  correo: string;
+  fecha: string;
+  estado: "ACTIVA" | "CANCELADA";
+  comidas: ComidaReserva[];
+  asistenciaConfirmadaEn: string | null;
+}
+
+/** Respuesta de POST /api/v1/reservas/{id}/confirmacion-asistencia. */
+export interface AsistenciaConfirmada {
+  id: number;
+  reservaId: number;
+  administradorId: number;
+  confirmadaEn: string;
+}
+
 /** Reserva devuelta por el listado, detalle, creación y modificación. */
 export interface ReservaResponse {
   id: number;

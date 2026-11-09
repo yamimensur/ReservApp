@@ -10,6 +10,19 @@ export function fechaLegible(iso: string): string {
   return nombre.charAt(0).toUpperCase() + nombre.slice(1);
 }
 
+/** Hora HH:mm de un instante ISO, en hora de Argentina. */
+export function horaArgentina(iso: string): string {
+  const partes = new Intl.DateTimeFormat("es-AR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: "America/Argentina/Buenos_Aires",
+  }).formatToParts(new Date(iso));
+  const hora = partes.find((p) => p.type === "hour")?.value ?? "";
+  const minuto = partes.find((p) => p.type === "minute")?.value ?? "";
+  return `${hora}:${minuto}`;
+}
+
 /** Devuelve la fecha de hoy en formato AAAA-MM-DD (zona local). */
 export function hoyISO(): string {
   const d = new Date();

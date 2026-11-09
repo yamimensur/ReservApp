@@ -226,6 +226,18 @@ Authorization: Bearer {{tokenEmpleado}}
 DELETE {{base}}/api/v1/reservas/999999
 Authorization: Bearer {{tokenEmpleado}}
 
+### reservas del día: exitoso -> 200
+GET {{base}}/api/v1/asistencias?fecha=2026-11-09&page=0&size=50
+Authorization: Bearer {{tokenAdmin}}
+
+### reservas del día: fecha inválida -> 400
+GET {{base}}/api/v1/asistencias?fecha=manana
+Authorization: Bearer {{tokenAdmin}}
+
+### reservas del día con rol empleado -> 403
+GET {{base}}/api/v1/asistencias?fecha=2026-11-09
+Authorization: Bearer {{tokenEmpleado}}
+
 ### confirmar asistencia: exitoso -> 201
 POST {{base}}/api/v1/reservas/{{reservaId}}/confirmacion-asistencia
 Authorization: Bearer {{tokenAdmin}}
