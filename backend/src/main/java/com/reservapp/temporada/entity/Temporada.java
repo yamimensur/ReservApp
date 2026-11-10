@@ -2,6 +2,7 @@ package com.reservapp.temporada.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity @Table(name = "temporada")
 public class Temporada {
@@ -21,6 +22,11 @@ public class Temporada {
         this.fechaDesde = fechaDesde;
         this.fechaHasta = fechaHasta;
         this.estado = estado;
+    }
+
+    /** Semana 1 a 4 del ciclo, contada desde el inicio de la temporada. */
+    public short numeroDeSemana(LocalDate fecha) {
+        return (short) (ChronoUnit.WEEKS.between(fechaDesde, fecha) % 4 + 1);
     }
 
     public Long getId() { return id; }

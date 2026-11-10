@@ -43,6 +43,10 @@ GET {{base}}/api/v1/health
 GET {{base}}/api/v1/menus?fecha={{$datetime "YYYY-MM-DD" 1 d}}
 Authorization: Bearer {{tokenEmpleado}}
 
+### consultar menú: falta la fecha -> 400
+GET {{base}}/api/v1/menus
+Authorization: Bearer {{tokenEmpleado}}
+
 ### consultar menú: fecha sin temporada publicada -> 404
 GET {{base}}/api/v1/menus?fecha=2020-01-01
 Authorization: Bearer {{tokenEmpleado}}

@@ -5,6 +5,8 @@ import com.reservapp.auth.controller.AuthController;
 import com.reservapp.auth.service.AuthService;
 import com.reservapp.config.JwtConfig;
 import com.reservapp.config.SecurityConfig;
+import com.reservapp.menu.controller.MenuController;
+import com.reservapp.menu.service.MenuService;
 import com.reservapp.reserva.controller.ReservaController;
 import com.reservapp.reserva.service.CrearReservaConComprobante;
 import com.reservapp.reserva.service.ReservaService;
@@ -25,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest({AuthController.class, ReservaController.class})
+@WebMvcTest({AuthController.class, ReservaController.class, MenuController.class})
 @Import({SecurityConfig.class, JwtConfig.class})
 @TestPropertySource(properties = "app.jwt.secret=secreto-solo-para-tests-de-al-menos-32-caracteres")
 class ManejoDeErroresTest {
@@ -34,6 +36,7 @@ class ManejoDeErroresTest {
     @MockitoBean ReservaService reservas;
     @MockitoBean CrearReservaConComprobante altas;
     @MockitoBean AsistenciaService asistencias;
+    @MockitoBean MenuService menus;
 
     private static RequestPostProcessor empleado() {
         return jwt().jwt(token -> token.subject("empleado@reservapp.demo"))
@@ -47,6 +50,13 @@ class ManejoDeErroresTest {
                         .content("{\"correo\":\"empleado@reservapp.demo\""))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("El cuerpo de la solicitud no es un JSON válido"));
+    }
+
+    @Test
+    void unMenuSinFechaResponde400() throws Exception {
+        mvc.perform(get("/api/v1/menus").with(empleado()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Falta el parámetro 'fecha'"));
     }
 
     @Test

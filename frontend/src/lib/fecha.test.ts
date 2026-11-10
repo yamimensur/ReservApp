@@ -11,7 +11,7 @@ afterEach(() => vi.useRealTimers());
 describe("hoyISO", () => {
   it("devuelve la fecha local incluso después de las 21 hs (UTC-3)", () => {
     // 28 de octubre a las 22:00 en Argentina = 29 de octubre 01:00 UTC.
-    // CI corre con TZ=America/Argentina/Buenos_Aires para reproducir esto.
+    // Vitest fija TZ=America/Argentina/Buenos_Aires para reproducir esto.
     vi.useFakeTimers({ now: new Date("2026-10-29T01:00:00Z") });
     expect(hoyISO()).toBe("2026-10-28");
   });
@@ -57,9 +57,15 @@ describe("diasDisponibles", () => {
     }
   });
 
-  it("incluye hoy si es laborable", () => {
-    fijarFecha("2026-10-28"); // miércoles
+  it("incluye hoy si es laborable y todavía no son las 09:00", () => {
+    vi.useFakeTimers({ now: new Date("2026-10-28T11:00:00Z") }); // miércoles 08:00 en Argentina
     expect(diasDisponibles()).toContain("2026-10-28");
+  });
+
+  it("no incluye hoy a partir de las 09:00", () => {
+    vi.useFakeTimers({ now: new Date("2026-10-28T12:00:00Z") }); // miércoles 09:00 en Argentina
+    expect(diasDisponibles()).not.toContain("2026-10-28");
+    expect(diasDisponibles()).toContain("2026-10-29");
   });
 
   it("no incluye hoy si es fin de semana", () => {
@@ -69,9 +75,14 @@ describe("diasDisponibles", () => {
 });
 
 describe("proximoLaborable", () => {
-  it("devuelve hoy si es laborable", () => {
-    fijarFecha("2026-10-28"); // miércoles
+  it("devuelve hoy si es laborable y todavía no son las 09:00", () => {
+    vi.useFakeTimers({ now: new Date("2026-10-28T11:00:00Z") }); // miércoles 08:00 en Argentina
     expect(proximoLaborable()).toBe("2026-10-28");
+  });
+
+  it("pasa al día siguiente a partir de las 09:00", () => {
+    vi.useFakeTimers({ now: new Date("2026-10-28T12:00:00Z") }); // miércoles 09:00 en Argentina
+    expect(proximoLaborable()).toBe("2026-10-29");
   });
 
   it("devuelve el lunes siguiente si hoy es sábado", () => {
