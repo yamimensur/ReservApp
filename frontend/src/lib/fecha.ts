@@ -1,3 +1,5 @@
+import { limiteReserva } from "./reservas";
+
 /** Formatea una fecha ISO (AAAA-MM-DD) como "Lunes 3 de noviembre". */
 export function fechaLegible(iso: string): string {
   const [anio, mes, dia] = iso.split("-").map(Number);
@@ -43,20 +45,22 @@ function esLaborable(iso: string): boolean {
 }
 
 /**
- * Lista de días laborables para los que se puede consultar el menú:
- * desde hoy hasta 7 días adelante, solo lunes a viernes.
+ * Días laborables para consultar el menú, desde hoy hasta 7 días adelante.
+ * Hoy no se ofrece a partir de las 09:00 de Argentina: ya no se puede reservar.
  */
 export function diasDisponibles(): string[] {
   const hoy = hoyISO();
+  const ofrecerHoy = Date.now() < limiteReserva(hoy);
   const dias: string[] = [];
   for (let i = 0; i <= 7; i++) {
     const fecha = sumarDias(hoy, i);
+    if (fecha === hoy && !ofrecerHoy) continue;
     if (esLaborable(fecha)) dias.push(fecha);
   }
   return dias;
 }
 
-/** Próximo día laborable (hoy si es laborable, si no el lunes siguiente). */
+/** Primer día que todavía se puede reservar: hoy si es laborable y no pasaron las 09:00. */
 export function proximoLaborable(): string {
   const lista = diasDisponibles();
   return lista[0] ?? hoyISO();

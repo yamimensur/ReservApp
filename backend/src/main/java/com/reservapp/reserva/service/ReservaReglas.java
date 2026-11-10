@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +49,7 @@ public final class ReservaReglas {
                     "El menú no corresponde al día solicitado");
         }
         Temporada temporada = menu.getSemana().getTemporada();
-        long semana = ChronoUnit.WEEKS.between(temporada.getFechaDesde(), fecha) % 4 + 1;
+        short semana = temporada.numeroDeSemana(fecha);
         if (temporada.getEstado() != EstadoTemporada.PUBLICADA
                 || fecha.isBefore(temporada.getFechaDesde())
                 || fecha.isAfter(temporada.getFechaHasta())

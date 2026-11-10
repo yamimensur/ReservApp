@@ -93,6 +93,27 @@ class MenuServiceTest {
     }
 
     @Test
+    void noOfreceComidasInactivas() {
+        Usuario usuario = new Usuario(1L, CORREO, TipoUsuario.EMPLEADO, EstadoUsuario.ACTIVO, null, Set.of());
+        Temporada temporada = new Temporada(1L, "Demo", Estacion.INVIERNO, FECHA.minusDays(30), FECHA.plusDays(60), EstadoTemporada.PUBLICADA);
+        SemanaTemporada semana = new SemanaTemporada(1L, temporada, (short) 1);
+        Comida activa = new Comida(3L, "Curry de garbanzos", TipoComida.PLATO_PRINCIPAL, EstadoComida.ACTIVA, Set.of());
+        Comida inactiva = new Comida(2L, "Milanesa con puré", TipoComida.PLATO_PRINCIPAL, EstadoComida.INACTIVA, Set.of());
+        MenuDiario menu = new MenuDiario(1L, semana, DayOfWeek.TUESDAY, Set.of(activa, inactiva));
+
+        when(usuarios.findByCorreo(CORREO)).thenReturn(Optional.of(usuario));
+        when(temporadas.findByEstadoAndFechaDesdeIsLessThanEqualAndFechaHastaIsGreaterThanEqual(
+                EstadoTemporada.PUBLICADA, FECHA, FECHA)).thenReturn(Optional.of(temporada));
+        when(semanas.findByTemporadaIdAndNumero(1L, (short) 1)).thenReturn(Optional.of(semana));
+        when(menus.findBySemanaIdAndDiaSemana(1L, DayOfWeek.TUESDAY)).thenReturn(Optional.of(menu));
+
+        MenuResponse response = service().consultarMenu(FECHA, CORREO);
+
+        assertThat(response.comidas()).extracting(MenuResponse.ComidaMenuResponse::nombre)
+                .containsExactly("Curry de garbanzos");
+    }
+
+    @Test
     void lanza404SiNoHayTemporadaPublicada() {
         Usuario usuario = new Usuario(1L, CORREO, TipoUsuario.EMPLEADO, EstadoUsuario.ACTIVO, null, Set.of());
         when(usuarios.findByCorreo(CORREO)).thenReturn(Optional.of(usuario));

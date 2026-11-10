@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.Set;
 
@@ -48,7 +47,7 @@ public class MenuService {
                         EstadoTemporada.PUBLICADA, fecha, fecha)
                 .orElseThrow(() -> new RecursoNoEncontradoException("No hay un menú publicado para la fecha indicada"));
 
-        short semanaNumero = (short) (ChronoUnit.WEEKS.between(temporada.getFechaDesde(), fecha) % 4 + 1);
+        short semanaNumero = temporada.numeroDeSemana(fecha);
 
         SemanaTemporada semana = semanas.findByTemporadaIdAndNumero(temporada.getId(), semanaNumero)
                 .orElseThrow(() -> new RecursoNoEncontradoException("No hay un menú publicado para la fecha indicada"));
@@ -59,6 +58,7 @@ public class MenuService {
         Set<RestriccionAlimenticia> restriccionesUsuario = usuario.getRestricciones();
 
         var comidas = menu.getComidas().stream()
+                .filter(c -> c.getEstado() == EstadoComida.ACTIVA)
                 .sorted(Comparator.comparing((Comida c) -> c.getTipo().ordinal()).thenComparing(Comida::getNombre))
                 .map(c -> new ComidaMenuResponse(
                         c.getId(),

@@ -12,5 +12,8 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    env: {
+      TZ: "America/Argentina/Buenos_Aires",
+    },
   },
 });

@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -39,6 +40,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     ResponseEntity<ApiError> cuerpoIlegible(HttpMessageNotReadableException ex) {
         return response(HttpStatus.BAD_REQUEST, "El cuerpo de la solicitud no es un JSON válido", Map.of());
+    }
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    ResponseEntity<ApiError> parametroFaltante(MissingServletRequestParameterException ex) {
+        return response(HttpStatus.BAD_REQUEST, "Falta el parámetro '" + ex.getParameterName() + "'", Map.of());
     }
     // Un parámetro de la URL no tiene el formato esperado (por ejemplo, /reservas/abc).
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

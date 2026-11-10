@@ -10,7 +10,7 @@ La API usa JSON, el prefijo `/api/v1` y autenticación JWT salvo donde se indiqu
 | `POST /api/v1/auth/login` | Autentica con correo corporativo | Público | `200`; `401` credenciales inválidas o usuario inactivo |
 | `GET /api/v1/usuarios/me` | Consulta el perfil y restricciones propios | Empleado, Tercerizado, Administrador, RR. HH. | `200`; `401` |
 | `PATCH /api/v1/usuarios/me/restricciones` | Actualiza restricciones propias | Empleado, Tercerizado | `200`; `400` body inválido; `404` restricción inexistente |
-| `GET /api/v1/menus?fecha=AAAA-MM-DD` | Consulta el menú aplicable y sus compatibilidades | Empleado, Tercerizado | `200`; `400` fecha inválida; `404` menú no publicado |
+| `GET /api/v1/menus?fecha=AAAA-MM-DD` | Consulta el menú aplicable y sus compatibilidades. No incluye comidas inactivas | Empleado, Tercerizado | `200`; `400` fecha ausente o inválida; `404` menú no publicado |
 | `GET /api/v1/reservas?page=0&size=20` | Lista las reservas de la persona autenticada | Empleado, Tercerizado | `200`; `401`; `403` rol sin acceso |
 | `POST /api/v1/reservas` | Registra una reserva propia y, si quedó guardada, intenta enviar el comprobante | Empleado, Tercerizado | `201` con `notificacion`: `ENVIADA` o `NO_ENVIADA`; `400` body inválido; `404` menú/comida inexistente; `409` reserva duplicada; `422` fecha, temporada, menú o selección incompatibles |
 | `GET /api/v1/reservas/{id}` | Consulta una reserva propia | Empleado, Tercerizado | `200`; `404` ajena o inexistente |
