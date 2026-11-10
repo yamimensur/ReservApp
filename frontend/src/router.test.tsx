@@ -17,6 +17,9 @@ function logueadoComo(rol: Rol) {
     if (String(url).includes("/api/v1/asistencias")) {
       return Promise.resolve(respuestaJson({ content: [], number: 0, totalPages: 0, totalElements: 0, first: true, last: true }));
     }
+    if (String(url).includes("/api/v1/menus")) {
+      return Promise.resolve(respuestaJson({ id: 1, fecha: "2026-11-10", comidas: [] }));
+    }
     return Promise.resolve(respuestaJson({
       id: 1, correo: "persona@reservapp.demo", rol, tipoUsuario: "EMPLEADO", restricciones: [],
     }));
