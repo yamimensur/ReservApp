@@ -54,3 +54,30 @@ jobs:
         run: npm test
         env:
           TZ: America/Argentina/Buenos_Aires
+
+  e2e:
+    name: E2E
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+      # Chromium y las librerías del sistema que necesita para correr sin pantalla
+      - name: Instalar el navegador
+        run: npx playwright install --with-deps chromium
+      # Arma la app, la levanta y recorre el flujo principal con la API simulada
+      - name: Tests E2E
+        run: npm run e2e
+      # Si algo falla, el reporte con capturas queda para bajar desde la pestaña Actions
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: reporte-e2e
+          path: frontend/playwright-report/
+          retention-days: 7

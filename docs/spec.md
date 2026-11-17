@@ -68,9 +68,9 @@ Usuarios, comidas, reservas, temporadas publicadas, asistencias y liquidaciones 
 
 Criterios de aceptación:
 
-- [ ] Dado un correo corporativo registrado y una contraseña válida, cuando la persona inicia sesión, entonces accede a las funciones correspondientes a su rol.
+- [x] Dado un correo corporativo registrado y una contraseña válida, cuando la persona inicia sesión, entonces accede a las funciones correspondientes a su rol.
 - [ ] Dado un perfil autenticado, cuando registra o actualiza sus restricciones alimenticias, entonces quedan guardadas para las sugerencias y validaciones posteriores.
-- [ ] Caso de error: cuando las credenciales son inválidas o el correo no está habilitado, el sistema informa el error sin revelar información sensible.
+- [x] Caso de error: cuando las credenciales son inválidas o el correo no está habilitado, el sistema informa el error sin revelar información sensible.
 
 ### H2 — Consultar y reservar almuerzo
 
@@ -78,10 +78,10 @@ Criterios de aceptación:
 
 Criterios de aceptación:
 
-- [ ] Dado un menú publicado para una fecha válida, cuando la persona lo consulta, entonces ve las opciones de entrada, plato principal, postre y bebida, indicando cuáles son compatibles con sus restricciones.
-- [ ] Dado un menú disponible, cuando selecciona un plato principal y confirma la reserva, entonces el sistema registra una única reserva activa para esa persona y fecha.
-- [ ] Dado un perfil con restricciones, cuando el menú tiene alternativas compatibles, entonces el sistema sugiere al menos un plato principal compatible.
-- [ ] Caso de error: cuando no se selecciona un plato principal, se intenta reservar fuera del plazo o se elige una comida incompatible, el sistema no crea la reserva y explica el motivo.
+- [x] Dado un menú publicado para una fecha válida, cuando la persona lo consulta, entonces ve las opciones de entrada, plato principal, postre y bebida, indicando cuáles son compatibles con sus restricciones.
+- [x] Dado un menú disponible, cuando selecciona un plato principal y confirma la reserva, entonces el sistema registra una única reserva activa para esa persona y fecha.
+- [x] Dado un perfil con restricciones, cuando el menú tiene alternativas compatibles, entonces el sistema sugiere al menos un plato principal compatible.
+- [x] Caso de error: cuando no se selecciona un plato principal, se intenta reservar fuera del plazo o se elige una comida incompatible, el sistema no crea la reserva y explica el motivo.
 
 ### H3 — Consultar, modificar o cancelar mis reservas
 
@@ -89,15 +89,15 @@ Criterios de aceptación:
 
 Criterios de aceptación:
 
-- [ ] Dada una persona autenticada con rol Empleado o Tercerizado, cuando ingresa a «Mis reservas», entonces ve únicamente sus reservas en un listado paginado desde la fecha más reciente, con fecha, código, comidas y estado; las canceladas se conservan en el historial.
-- [ ] Dada una consulta en curso, sin reservas o con un error de conexión, cuando se muestra la pantalla, entonces se informa la carga, el estado vacío con acceso al menú o el error con una opción de reintento, respectivamente.
-- [ ] Dada una reserva propia dentro del horario permitido, cuando la persona modifica sus elecciones, entonces se precargan las comidas vigentes, se permite elegir un plato principal y comidas opcionales compatibles y se actualiza el listado al guardar; un error conserva las elecciones válidas para corregir o reintentar.
-- [ ] Dada una reserva activa propia dentro del horario permitido, cuando la persona solicita cancelarla, entonces debe confirmar la acción; si desiste, no se envía la cancelación, y si confirma, se muestra el estado cancelado al completarse la operación.
-- [ ] Dada una reserva propia dentro del horario permitido, cuando la persona la cancela, entonces deja de contabilizarse en la demanda del día.
-- [ ] Dada una reserva cancelada, cuando la persona vuelve a reservar para esa fecha antes de las 09:00, entonces se crea una nueva reserva activa y se conserva la cancelada en el historial.
-- [ ] Caso de error: cuando ya existe una reserva activa para esa persona y fecha, el sistema rechaza una nueva reserva con estado HTTP 409.
-- [ ] Caso de error: cuando la hora límite ya venció, el sistema no permite modificar ni cancelar la reserva.
-- [ ] Dada una reserva cancelada o con el horario vencido, cuando se consulta su detalle en el listado, entonces no se ofrecen acciones de modificación ni cancelación; el corte se informa en hora de Argentina y se actualiza si la pantalla permanece abierta.
+- [x] Dada una persona autenticada con rol Empleado o Tercerizado, cuando ingresa a «Mis reservas», entonces ve únicamente sus reservas en un listado paginado desde la fecha más reciente, con fecha, código, comidas y estado; las canceladas se conservan en el historial.
+- [x] Dada una consulta en curso, sin reservas o con un error de conexión, cuando se muestra la pantalla, entonces se informa la carga, el estado vacío con acceso al menú o el error con una opción de reintento, respectivamente.
+- [x] Dada una reserva propia dentro del horario permitido, cuando la persona modifica sus elecciones, entonces se precargan las comidas vigentes, se permite elegir un plato principal y comidas opcionales compatibles y se actualiza el listado al guardar; un error conserva las elecciones válidas para corregir o reintentar.
+- [x] Dada una reserva activa propia dentro del horario permitido, cuando la persona solicita cancelarla, entonces debe confirmar la acción; si desiste, no se envía la cancelación, y si confirma, se muestra el estado cancelado al completarse la operación.
+- [x] Dada una reserva propia dentro del horario permitido, cuando la persona la cancela, entonces deja de contabilizarse en la demanda del día.
+- [x] Dada una reserva cancelada, cuando la persona vuelve a reservar para esa fecha antes de las 09:00, entonces se crea una nueva reserva activa y se conserva la cancelada en el historial.
+- [x] Caso de error: cuando ya existe una reserva activa para esa persona y fecha, el sistema rechaza una nueva reserva con estado HTTP 409.
+- [x] Caso de error: cuando la hora límite ya venció, el sistema no permite modificar ni cancelar la reserva.
+- [x] Dada una reserva cancelada o con el horario vencido, cuando se consulta su detalle en el listado, entonces no se ofrecen acciones de modificación ni cancelación; el corte se informa en hora de Argentina y se actualiza si la pantalla permanece abierta.
 
 ### H4 — Gestionar comidas y temporadas
 
@@ -117,8 +117,8 @@ Criterios de aceptación:
 Criterios de aceptación:
 
 - [ ] Dadas las reservas del día, cuando el administrador ingresa un código de reserva válido o busca a una persona manualmente, entonces puede confirmar su asistencia.
-- [ ] Dada una asistencia confirmada, cuando se consulta el listado diario, entonces se muestra la hora y el estado de asistencia de la reserva.
-- [ ] Caso de error: cuando no existe una reserva activa o la asistencia ya fue registrada, el sistema no duplica el registro y muestra una advertencia.
+- [x] Dada una asistencia confirmada, cuando se consulta el listado diario, entonces se muestra la hora y el estado de asistencia de la reserva.
+- [x] Caso de error: cuando no existe una reserva activa o la asistencia ya fue registrada, el sistema no duplica el registro y muestra una advertencia.
 
 ### H6 — Generar liquidación y reportes
 
