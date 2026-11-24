@@ -95,8 +95,10 @@ class ReservaTrasCancelarIT {
                 """);
         assertThat(baseAnterior.queryForObject("SELECT estado FROM reserva WHERE id = 1", String.class))
                 .isEqualTo("CANCELADA");
-        assertThat(baseAnterior.queryForObject("SELECT COUNT(*) FROM reserva WHERE usuario_id = 1", Integer.class))
-                .isEqualTo(2);
+        // La cancelada y la nueva conviven en la misma fecha (los datos demo traen además historial de otros días).
+        assertThat(baseAnterior.queryForObject(
+                "SELECT COUNT(*) FROM reserva WHERE usuario_id = 1 AND fecha = (SELECT fecha FROM reserva WHERE id = 1)",
+                Integer.class)).isEqualTo(2);
         assertThat(baseAnterior.queryForObject("SELECT COUNT(*) FROM flyway_schema_history WHERE version = '2' AND success",
                 Integer.class)).isEqualTo(1);
     }
